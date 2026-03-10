@@ -1,0 +1,49 @@
+:root {
+  --brand-primary: 14 165 233;     /* Ocean Blue */
+  --brand-secondary: 16 185 129;  /* Sea Green */
+  --brand-primary-muted: 224 242 254; 
+  
+  --shadow-color: 15 23 42; 
+
+  --surface-base: 248 250 252; 
+  --surface-container: 255 255 255;
+  --surface-elevated: 255 255 255;
+
+  --content-primary: 15 23 42; 
+  --content-secondary: 71 85 105; 
+  --content-inverse: 255 255 255;
+
+  --border-subtle: 226 232 240; 
+
+  --feedback-success: 16 185 129;
+  --feedback-success-bg: 209 250 229;
+  --feedback-success-text: 6 95 70;
+  
+  --feedback-warning: 245 158 11;
+  --feedback-warning-bg: 254 243 199;
+  --feedback-warning-text: 146 64 14;
+}
+
+.dark {
+  --brand-primary: 56 189 248;     
+  --brand-secondary: 52 211 153; 
+  --brand-primary-muted: 12 74 110;  
+  
+  --shadow-color: 0 0 0; 
+
+  --surface-base: 15 23 42;      
+  --surface-container: 30 41 59; 
+  --surface-elevated: 51 65 85;  
+
+  --content-primary: 248 250 252; 
+  --content-secondary: 148 163 184; 
+  --content-inverse: 15 23 42;
+
+  --border-subtle: 51 65 85; 
+
+  --feedback-success-bg: 6 78 59;
+  --feedback-success-text: 167 243 208;
+  
+  --feedback-warning-bg: 120 53 15;
+  --feedback-warning-text: 253 230 138;
+}

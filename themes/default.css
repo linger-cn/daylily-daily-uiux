@@ -1,0 +1,49 @@
+:root {
+  --brand-primary: 234 88 12;     /* 暖橙 */
+  --brand-secondary: 20 184 166;  /* 青绿 */
+  --brand-primary-muted: 255 237 213; 
+  
+  --shadow-color: 68 64 60; 
+
+  --surface-base: 250 249 248; 
+  --surface-container: 255 255 255;
+  --surface-elevated: 255 255 255;
+
+  --content-primary: 41 37 36; 
+  --content-secondary: 120 113 108; 
+  --content-inverse: 255 255 255;
+
+  --border-subtle: 231 229 228; 
+
+  --feedback-success: 16 185 129;
+  --feedback-success-bg: 209 250 229;
+  --feedback-success-text: 6 95 70;
+  
+  --feedback-warning: 245 158 11;
+  --feedback-warning-bg: 254 243 199;
+  --feedback-warning-text: 146 64 14;
+}
+
+.dark {
+  --brand-primary: 249 115 22;     
+  --brand-secondary: 45 212 191; 
+  --brand-primary-muted: 67 20 7;  
+  
+  --shadow-color: 0 0 0; 
+
+  --surface-base: 28 25 23;      
+  --surface-container: 41 37 36; 
+  --surface-elevated: 68 64 60;  
+
+  --content-primary: 245 245 244; 
+  --content-secondary: 168 162 158; 
+  --content-inverse: 28 25 23;
+
+  --border-subtle: 68 64 60; 
+
+  --feedback-success-bg: 6 78 59;
+  --feedback-success-text: 167 243 208;
+  
+  --feedback-warning-bg: 120 53 15;
+  --feedback-warning-text: 253 230 138;
+}
