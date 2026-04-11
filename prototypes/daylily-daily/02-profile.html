@@ -118,10 +118,13 @@
         <h3 class="text-sm font-bold text-[#2D2926] px-1 mt-6">我的家人照护</h3>
 
         <!-- 常态免费：邀请家人监督我 -->
-        <div class="bg-white rounded-[24px] p-5 shadow-brand-sm active-overlay space-y-3">
+        <div class="bg-white rounded-[24px] p-5 shadow-brand-sm active-overlay space-y-3 cursor-pointer" onclick="window.location.href='09-family-management.html'">
           <div class="flex items-center justify-between">
-            <h4 class="text-[13px] font-bold text-[#2D2926]">随时照看我的人</h4>
-            <span class="text-[11px] text-brand-primary font-bold bg-brand-primary/10 px-2 py-0.5 rounded-full cursor-pointer">+ 邀请微信亲友</span>
+            <div class="flex items-center space-x-1.5">
+               <h4 class="text-[13px] font-bold text-[#2D2926]">我的家庭</h4>
+               <svg class="w-3.5 h-3.5 text-neutral-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7"></path></svg>
+            </div>
+            <span class="text-[11px] text-brand-primary font-bold bg-brand-primary/10 px-2 py-0.5 rounded-full">+ 管理家人</span>
           </div>
           <div class="flex items-center space-x-3 pt-1">
              <!-- Family Member 1 -->
@@ -136,7 +139,7 @@
         </div>
 
         <!-- PRO 功能：创建照护组 / 管理他人计划 -->
-        <div class="relative bg-gradient-to-br from-[#1C1A19] to-[#2D2926] rounded-[24px] p-5 shadow-brand-md overflow-hidden active-overlay cursor-pointer mt-3">
+        <div class="relative bg-gradient-to-br from-[#1C1A19] to-[#2D2926] rounded-[24px] p-5 shadow-brand-md overflow-hidden active-overlay cursor-pointer mt-3" onclick="window.location.href='10-family-groups-list.html'">
           <div class="absolute inset-0 pro-shimmer pointer-events-none"></div>
           <div class="relative z-10 flex items-center justify-between">
             <div class="flex items-center">
@@ -199,7 +202,14 @@
                <span class="text-[13px] font-bold text-[#2D2926]">防打扰设置</span>
                <svg class="w-4 h-4 text-neutral-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
             </div>
-            <div class="py-4 flex justify-between items-center active-overlay cursor-pointer">
+            <div class="py-4 flex justify-between items-center active-overlay cursor-pointer" onclick="window.location.href='08-feature-voting.html'">
+               <div class="flex items-center space-x-2">
+                 <span class="text-[13px] font-bold text-[#2D2926]">功能许愿池</span>
+                 <span class="bg-brand-primary text-white text-[8px] font-bold px-1.5 py-0.5 rounded-full">投票</span>
+               </div>
+               <svg class="w-4 h-4 text-neutral-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+            </div>
+            <div class="py-4 flex justify-between items-center active-overlay cursor-pointer" onclick="window.location.href='07-help-feedback.html'">
                <span class="text-[13px] font-bold text-[#2D2926]">使用帮助与反馈</span>
                <svg class="w-4 h-4 text-neutral-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
             </div>

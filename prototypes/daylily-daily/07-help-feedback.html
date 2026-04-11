@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>萱草日签 - 帮助与反馈</title>
+  <link id="theme-css" rel="stylesheet" href="themes/default.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              primary: '#FF9500', /* Using the defined warm orange color for guarantee */
+              secondary: 'rgb(var(--brand-secondary) / <alpha-value>)',
+              'primary-muted': 'rgb(var(--brand-primary-muted) / <alpha-value>)',
+            },
+            surface: {
+              base: 'rgb(var(--surface-base) / <alpha-value>)',
+              container: 'rgb(var(--surface-container) / <alpha-value>)',
+              elevated: 'rgb(var(--surface-elevated) / <alpha-value>)',
+            },
+            feedback: {
+              success: '#34C759',
+              warning: '#FF3B30',
+            }
+          },
+          boxShadow: {
+            'brand-sm': '0 2px 4px -1px rgb(var(--shadow-color) / 0.06), 0 1px 2px -1px rgb(var(--shadow-color) / 0.04)',
+            'brand-md': '0 4px 6px -1px rgb(var(--shadow-color) / 0.1), 0 2px 4px -2px rgb(var(--shadow-color) / 0.05)',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    .active-overlay { position: relative; overflow: hidden; }
+    .active-overlay::after { content: ''; position: absolute; inset: 0; background-color: rgba(0,0,0,0); transition: background-color 0.1s; pointer-events: none; }
+    .active-overlay:active::after { background-color: rgba(0,0,0,0.08); }
+  </style>
+</head>
+<body class="bg-neutral-100 flex items-center justify-center min-h-screen font-sans antialiased text-[#4A443F]">
+  <!-- Mobile Container -->
+  <div class="relative w-full max-w-[375px] h-[812px] bg-[#F9F7F3] shadow-2xl overflow-hidden flex flex-col border-[8px] border-neutral-900 rounded-[50px]">
+    
+    <!-- Header NavBar -->
+    <div class="shrink-0 z-50 bg-[#F9F7F3]/80 backdrop-blur-md">
+      <div class="h-11 w-full"></div>
+      <div class="h-11 w-full flex items-center justify-between px-4 relative">
+        <div class="w-20 flex items-center active-overlay cursor-pointer" onclick="window.location.href='02-profile.html'">
+          <svg class="w-5 h-5 text-[#2D2926]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path></svg>
+        </div>
+        <h2 class="text-[17px] font-bold text-[#2D2926]">帮助与反馈</h2>
+        <!-- 胶囊菜单占位 -->
+        <div class="w-[87px]"></div>
+      </div>
+    </div>
+
+    <!-- Scrollable Body -->
+    <div class="flex-1 overflow-y-auto no-scrollbar pb-10 px-4 mt-2">
+      
+      <!-- FAQ Section -->
+      <section class="mt-4">
+        <h3 class="text-sm font-bold text-[#2D2926] px-1 mb-3">常见问题</h3>
+        <div class="bg-white rounded-[24px] shadow-brand-sm divide-y divide-neutral-50 px-4">
+          <div class="py-4 flex justify-between items-center active-overlay cursor-pointer">
+             <span class="text-[14px] font-bold text-[#2D2926]">如何邀请家人监督我？</span>
+             <svg class="w-4 h-4 text-neutral-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+          </div>
+          <div class="py-4 flex justify-between items-center active-overlay cursor-pointer">
+             <span class="text-[14px] font-bold text-[#2D2926]">忘记打卡了怎么办？</span>
+             <svg class="w-4 h-4 text-neutral-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+          </div>
+          <div class="py-4 flex justify-between items-center active-overlay cursor-pointer">
+             <span class="text-[14px] font-bold text-[#2D2926]">什么是 PRO 版的影子账户？</span>
+             <svg class="w-4 h-4 text-neutral-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+          </div>
+        </div>
+      </section>
+
+      <!-- Feedback Section -->
+      <section class="mt-8">
+        <h3 class="text-sm font-bold text-[#2D2926] px-1 mb-3">问题与意见反馈</h3>
+        <div class="bg-white rounded-[24px] shadow-brand-sm p-4">
+          <textarea class="w-full h-32 bg-neutral-50 rounded-xl p-3 text-[13px] text-[#2D2926] placeholder-neutral-400 focus:outline-none focus:ring-1 focus:ring-brand-primary resize-none" placeholder="请详细描述您遇到的问题或建议，我们将尽快协助您优化体验..."></textarea>
+          
+          <div class="mt-4 flex items-center justify-between">
+            <div class="w-10 h-10 rounded-xl bg-neutral-50 flex items-center justify-center border border-dashed border-neutral-200 cursor-pointer active-overlay">
+              <svg class="w-5 h-5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+            </div>
+            <span class="text-[11px] text-[#8C847E]">提供截图帮助我们快速定位</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Submit Button -->
+      <div class="mt-8">
+        <button class="w-full bg-brand-primary text-white font-bold text-[16px] py-4 rounded-[24px] shadow-lg active:scale-[0.98] transition-transform flex justify-center items-center">
+          提交反馈
+        </button>
+      </div>
+
+    </div>
+
+    <!-- 安全区底色适配 -->
+    <div class="absolute bottom-0 w-full h-[env(safe-area-inset-bottom)] bg-[#F9F7F3]"></div>
+    <!-- 安全区提示条 (iOS Home Indicator) -->
+    <div class="absolute bottom-1 w-1/3 h-1.5 bg-neutral-300 rounded-full left-1/2 -translate-x-1/2 opacity-50"></div>
+
+  </div>
+</body>
+</html>
