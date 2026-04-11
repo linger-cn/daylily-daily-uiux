@@ -66,6 +66,11 @@
         <div class="w-[87px]"></div>
       </div>
     </div>
+    
+    <!-- 💥 Dev Toggle For Role Mode -->
+    <div class="absolute top-14 right-4 z-[100] bg-black/80 text-white text-[10px] px-3 py-2 rounded-full cursor-pointer hover:bg-black transition-colors shadow-lg border border-neutral-700 font-bold tracking-wider" onclick="toggleRole()">
+       切换身份: <span id="dev-role-label" class="text-brand-primary">主理人</span>
+    </div>
 
     <!-- Scrollable Body -->
     <div class="flex-1 overflow-y-auto no-scrollbar pb-32">
@@ -91,7 +96,7 @@
                  </div>
                  <div>
                    <h3 class="text-[15px] font-bold text-[#2D2926]">自己 (大白)</h3>
-                   <span class="inline-block mt-1 text-[9px] font-black tracking-widest text-brand-primary bg-brand-primary/10 px-2 py-0.5 rounded uppercase">我是创建者</span>
+                   <span id="my-role-badge" class="inline-block mt-1 text-[9px] font-black tracking-widest text-brand-primary bg-brand-primary/10 px-2 py-0.5 rounded uppercase">我是创建者</span>
                  </div>
               </div>
            </div>
@@ -121,7 +126,7 @@
            </div>
 
            <!-- 影子代管帐户 (触发抽屉接管) -->
-           <div class="relative overflow-hidden w-full group">
+           <div id="shadow-member-row" class="relative overflow-hidden w-full group">
               <!-- 滑动底层背景 -->
               <div class="absolute inset-y-0 right-0 w-[80px] bg-feedback-warning text-white flex items-center justify-center font-bold text-[13px] cursor-pointer" onclick="removeMember(this)">
                  删除
@@ -143,14 +148,14 @@
                  </div>
                  <!-- 邀请升维按钮 -->
                  <button class="bg-[#07C160] text-white text-[10px] font-bold px-3 py-1.5 rounded-full shadow-sm active:scale-[0.95] transition-transform" onclick="event.stopPropagation(); showShadowPopup('爷爷')">
-                    邀请升维接管
+                    邀请接管
                  </button>
               </div>
            </div>
 
         </div>
 
-        <p class="text-[11px] text-[#8C847E] px-2 mt-4 flex items-center">
+        <p id="swipe-hint" class="text-[11px] text-[#8C847E] px-2 mt-4 flex items-center transition-all duration-300">
            <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> 小贴士：向左轻滑家人名片，可将TA移出当前照护组
         </p>
       </section>
@@ -172,12 +177,19 @@
          </div>
       </section>
 
-      <!-- 5. 危险区：解散 -->
+      <!-- 5. 危险区：解散或退出 -->
       <section class="px-4 flex flex-col items-center mt-24 opacity-60 hover:opacity-100 transition-opacity">
-         <button class="w-[85%] border-2 border-feedback-warning text-feedback-warning font-bold text-[15px] py-3.5 rounded-full hover:bg-feedback-warning/10 active:scale-[0.98] transition-all" onclick="showDisbandPopup()">
+         <!-- 主理人按钮：解散 -->
+         <button id="btn-admin-danger" class="w-[85%] border-2 border-feedback-warning text-feedback-warning font-bold text-[15px] py-3.5 rounded-full hover:bg-feedback-warning/10 active:scale-[0.98] transition-all" onclick="showDisbandPopup()">
            解散该家庭组
          </button>
-         <span class="text-[10px] text-neutral-400 mt-3 font-medium">解散后，相关的用药提醒与共享记录也将随之停止</span>
+         <span id="hint-admin-danger" class="text-[10px] text-neutral-400 mt-3 font-medium">解散后，相关的用药提醒与共享记录也将随之停止</span>
+         
+         <!-- 成员按钮：退出 -->
+         <button id="btn-member-danger" class="hidden w-[85%] border-2 border-neutral-300 text-neutral-500 font-bold text-[15px] py-3.5 rounded-full hover:bg-neutral-200 active:scale-[0.98] transition-all" onclick="showLeavePopup()">
+           退出该照护组
+         </button>
+         <span id="hint-member-danger" class="hidden text-[10px] text-neutral-400 mt-3 font-medium">退出后将不可再看本群数据，随时可重新被邀请加入</span>
       </section>
     </div>
 
@@ -223,6 +235,25 @@
              <button class="flex-1 bg-feedback-warning text-white font-bold py-3.5 rounded-full opacity-40 pointer-events-none transition-opacity" id="confirm-disband-btn" onclick="executeDisband()">确认解散</button>
           </div>
        </div>
+    <!-- 🌟 真危险区：防呆核弹弹窗 (退群) -->
+    <div id="leave-popup" class="absolute inset-0 z-[110] hidden">
+       <div class="absolute inset-0 bg-neutral-900/40 backdrop-blur-[2px] opacity-0 transition-opacity duration-300" id="leave-mask"></div>
+       <div class="absolute bottom-1/2 translate-y-1/2 left-6 right-6 bg-white rounded-[32px] p-6 shadow-2xl transform scale-95 opacity-0 transition-all duration-300 flex flex-col items-center border-[6px] border-neutral-200/50" id="leave-dialog">
+          
+          <div class="w-14 h-14 bg-neutral-100 rounded-full flex items-center justify-center text-neutral-500 mb-4">
+             <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+          </div>
+          
+          <h3 class="text-lg font-bold text-[#2D2926] mb-2 text-center">确定退出照护组吗？</h3>
+          <p class="text-[12px] text-[#8C847E] text-center mb-6 leading-relaxed">
+            离开后，您将无法再查看群内成员的用药提醒和打卡数据。<br>您需要被重新邀请才能再次加入。
+          </p>
+          
+          <div class="flex w-full space-x-3">
+             <button class="flex-1 bg-neutral-100 text-[#4A443F] font-bold py-3.5 rounded-full active:scale-[0.98] transition-transform" onclick="hideLeavePopup()">再想想</button>
+             <button class="flex-1 bg-neutral-800 text-white font-bold py-3.5 rounded-full active:scale-[0.98] transition-transform" onclick="executeLeave()">确定退出</button>
+          </div>
+       </div>
     </div>
 
     <!-- 安全区 -->
@@ -232,8 +263,47 @@
   </div>
 
   <script>
+    let isAdmin = true;
+
+    /* 角色身份切换核心枢纽 */
+    function toggleRole() {
+        isAdmin = !isAdmin;
+        document.getElementById('dev-role-label').innerText = isAdmin ? '主理人' : '参与者';
+        document.getElementById('dev-role-label').className = isAdmin ? 'text-brand-primary' : 'text-[#8C847E]';
+        
+        document.getElementById('my-role-badge').innerText = isAdmin ? '我是创建者' : '群成员';
+        document.getElementById('my-role-badge').className = isAdmin ? 'inline-block mt-1 text-[9px] font-black tracking-widest text-brand-primary bg-brand-primary/10 px-2 py-0.5 rounded uppercase' : 'inline-block mt-1 text-[9px] font-bold tracking-widest text-neutral-500 bg-neutral-100 px-2 py-0.5 rounded';
+        
+        const swipeHint = document.getElementById('swipe-hint');
+        const shadowMember = document.getElementById('shadow-member-row');
+        
+        if (isAdmin) {
+            swipeHint.style.display = 'flex';
+            shadowMember.style.display = '';
+            
+            document.getElementById('btn-admin-danger').classList.remove('hidden');
+            document.getElementById('hint-admin-danger').classList.remove('hidden');
+            document.getElementById('btn-member-danger').classList.add('hidden');
+            document.getElementById('hint-member-danger').classList.add('hidden');
+        } else {
+            swipeHint.style.display = 'none';
+            shadowMember.style.display = 'none';
+            
+            // Revert any open swipes when switching to member
+            document.querySelectorAll('.swipe-row').forEach(el => el.classList.remove('swiped-left'));
+            
+            document.getElementById('btn-admin-danger').classList.add('hidden');
+            document.getElementById('hint-admin-danger').classList.add('hidden');
+            document.getElementById('btn-member-danger').classList.remove('hidden');
+            document.getElementById('hint-member-danger').classList.remove('hidden');
+        }
+    }
+
     /* 滑动移除交互 */
     function toggleSwipeRow(element) {
+       // Members are restricted from kicking people out
+       if(!isAdmin) return;
+       
        document.querySelectorAll('.swipe-row').forEach(el => {
           if(el !== element) el.classList.remove('swiped-left');
        });
@@ -316,6 +386,33 @@
     function executeDisband() {
         alert("执行解散家庭组逻辑，将解除所有连接并跳转首页");
         window.location.href = "01-home.html";
+    }
+
+    /* 退出组逻辑 */
+    function showLeavePopup() {
+       const wrapper = document.getElementById('leave-popup');
+       const mask = document.getElementById('leave-mask');
+       const dialog = document.getElementById('leave-dialog');
+       
+       wrapper.classList.remove('hidden');
+       void wrapper.offsetWidth;
+       mask.classList.remove('opacity-0');
+       dialog.classList.remove('opacity-0', 'scale-95');
+       dialog.classList.add('scale-100');
+    }
+
+    function hideLeavePopup() {
+       const mask = document.getElementById('leave-mask');
+       const dialog = document.getElementById('leave-dialog');
+       mask.classList.add('opacity-0');
+       dialog.classList.remove('scale-100');
+       dialog.classList.add('opacity-0', 'scale-95');
+       setTimeout(() => document.getElementById('leave-popup').classList.add('hidden'), 300);
+    }
+    
+    function executeLeave() {
+        alert("执行退出家庭组逻辑，切断与此群的连接并跳转家族广场");
+        window.location.href = "10-family-groups-list.html";
     }
 
     /* 空白区域关抽屉 */
