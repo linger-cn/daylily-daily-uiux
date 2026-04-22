@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>萱草日签 - 配置亲情版</title>
+  <link id="theme-css" rel="stylesheet" href="themes/default.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              primary: 'rgb(var(--brand-primary) / <alpha-value>)',
+              secondary: 'rgb(var(--brand-secondary) / <alpha-value>)',
+              'primary-muted': 'rgb(var(--brand-primary-muted) / <alpha-value>)',
+              premium: '#D4AF37', 
+            },
+            surface: {
+              base: 'rgb(var(--surface-base) / <alpha-value>)',
+              container: 'rgb(var(--surface-container) / <alpha-value>)',
+            },
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    .btn-bounce { transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1); }
+    .btn-bounce:active { transform: scale(0.96); }
+    
+    /* 录音波纹动画 */
+    .recording-wave {
+      animation: wave 1.2s infinite ease-in-out alternate;
+    }
+    @keyframes wave {
+      0% { height: 10px; }
+      100% { height: 32px; }
+    }
+    
+    /* 页面切换过渡 */
+    .step-container {
+      transition: transform 0.4s ease, opacity 0.4s ease;
+    }
+  </style>
+</head>
+<body class="bg-neutral-100 flex items-center justify-center min-h-screen font-sans antialiased text-[#4A443F]">
+
+  <div class="relative w-full max-w-[375px] h-[812px] bg-[#F9F7F3] shadow-2xl overflow-hidden flex flex-col border-[8px] border-neutral-900 rounded-[50px]">
+    
+    <!-- 导航栏 -->
+    <div class="shrink-0 z-50 bg-[#F9F7F3]/80 backdrop-blur-md">
+      <div class="h-11 w-full"></div>
+      <div class="h-11 w-full flex items-center justify-between px-4">
+        <div class="w-20"></div>
+        <h2 class="text-[17px] font-medium text-[#2D2926]">配置专属亲情包</h2>
+        <div class="w-20 text-right">
+          <span class="text-[14px] text-content-secondary cursor-pointer" onclick="goToHome()">跳过</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 庆祝动效 (仅短暂显示) -->
+    <div id="celebration" class="absolute inset-0 bg-white z-[40] flex flex-col items-center justify-center transition-opacity duration-1000">
+       <div class="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center mb-6 scale-110">
+         <svg class="w-10 h-10 text-green-500" fill="currentColor" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+       </div>
+       <h2 class="text-2xl font-bold text-[#2D2926]">开通成功！</h2>
+       <p class="text-[14px] text-content-secondary mt-2">感谢您给长辈带来的温暖</p>
+    </div>
+
+    <!-- 配置向导内容区 -->
+    <div class="flex-1 overflow-hidden relative mt-4">
+      
+      <!-- 进度指示器 -->
+      <div class="flex justify-center gap-2 mb-8 z-10 relative">
+        <div id="dot-1" class="w-2 h-2 rounded-full bg-brand-premium transition-colors"></div>
+        <div id="dot-2" class="w-2 h-2 rounded-full bg-neutral-300 transition-colors"></div>
+      </div>
+
+      <!-- 步骤滑动窗口 -->
+      <div id="steps-wrapper" class="flex w-[200%] h-full step-container">
+        
+        <!-- 步骤 1: 录制语音 -->
+        <div class="w-1/2 h-full px-6 flex flex-col items-center">
+          <div class="text-center mb-8">
+            <h3 class="text-[22px] font-bold text-[#2D2926] mb-2">录制专属提醒语音</h3>
+            <p class="text-[14px] text-content-secondary">用您的声音，替代系统的按时服药播报</p>
+          </div>
+
+          <!-- 模拟提示词卡片 -->
+          <div class="w-full bg-white rounded-2xl p-5 shadow-sm border border-neutral-100 text-center mb-10 relative">
+            <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-brand-premium/10 text-brand-premium text-[12px] font-bold px-3 py-1 rounded-full">建议文案</div>
+            <p class="text-[16px] text-[#2D2926] font-medium leading-relaxed mt-2">
+              “爸，到时间吃降压药啦，吃完记得点一下手机哦，爱你！”
+            </p>
+            <div class="mt-4 flex justify-center gap-2">
+              <span class="text-[12px] text-neutral-400 border border-neutral-200 rounded px-2 py-0.5">换一句</span>
+            </div>
+          </div>
+
+          <!-- 录音控件 -->
+          <div class="flex flex-col items-center flex-1">
+             <!-- 音波显示区 (录音时可见) -->
+             <div id="audio-waves" class="h-10 flex items-end justify-center gap-1 mb-6 opacity-0 transition-opacity">
+               <div class="w-1 bg-brand-premium rounded-full recording-wave" style="animation-delay: 0.1s"></div>
+               <div class="w-1 bg-brand-premium rounded-full recording-wave" style="animation-delay: 0.3s"></div>
+               <div class="w-1 bg-brand-premium rounded-full recording-wave" style="animation-delay: 0.5s"></div>
+               <div class="w-1 bg-brand-premium rounded-full recording-wave" style="animation-delay: 0.2s"></div>
+               <div class="w-1 bg-brand-premium rounded-full recording-wave" style="animation-delay: 0.4s"></div>
+             </div>
+
+             <!-- 录音按钮 -->
+             <div id="record-btn" class="w-20 h-20 rounded-full bg-brand-premium shadow-premium flex items-center justify-center cursor-pointer btn-bounce" onmousedown="startRecording()" onmouseup="stopRecording()" ontouchstart="startRecording()" ontouchend="stopRecording()">
+                <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
+             </div>
+             <p class="text-[13px] text-content-secondary mt-4">长按录音</p>
+          </div>
+
+          <button onclick="nextStep()" class="w-full py-3.5 rounded-full bg-neutral-900 text-white font-bold text-[16px] btn-bounce mb-8">下一步</button>
+        </div>
+
+        <!-- 步骤 2: 上传全家福 -->
+        <div class="w-1/2 h-full px-6 flex flex-col items-center">
+          <div class="text-center mb-8">
+            <h3 class="text-[22px] font-bold text-[#2D2926] mb-2">上传全家福背景</h3>
+            <p class="text-[14px] text-content-secondary">照片将作为长辈首页打卡时的温馨背景</p>
+          </div>
+
+          <!-- 上传与预览区 -->
+          <div class="w-full aspect-[3/4] bg-neutral-200 rounded-3xl border-2 border-dashed border-neutral-300 flex flex-col items-center justify-center mb-10 overflow-hidden relative cursor-pointer btn-bounce" onclick="simulateUpload()">
+             <div id="upload-placeholder" class="flex flex-col items-center">
+               <div class="w-12 h-12 rounded-full bg-white shadow-sm flex items-center justify-center mb-3">
+                 <svg class="w-6 h-6 text-brand-premium" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+               </div>
+               <span class="text-[14px] text-content-secondary font-medium">点击选择相册照片</span>
+             </div>
+             
+             <!-- 预览图 (初始隐藏) -->
+             <img id="preview-img" src="https://images.unsplash.com/photo-1511895426328-dc8714191300?q=80&w=600&auto=format&fit=crop" class="absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity">
+             
+             <!-- 遮罩示意 -->
+             <div id="preview-overlay" class="absolute inset-0 bg-gradient-to-t from-[#F9F7F3] via-black/20 to-transparent opacity-0 transition-opacity flex flex-col items-center justify-end pb-8 pointer-events-none">
+                <div class="w-16 h-16 rounded-full bg-white/30 backdrop-blur-md border border-white flex items-center justify-center">
+                   <span class="text-white font-bold text-xs">打卡区</span>
+                </div>
+             </div>
+          </div>
+
+          <div class="flex-1"></div>
+
+          <button onclick="goToHome()" class="w-full py-3.5 rounded-full bg-gradient-to-r from-[#D4AF37] to-[#B8860B] text-white font-bold text-[16px] shadow-premium btn-bounce mb-8">完成配置，去体验</button>
+        </div>
+
+      </div>
+    </div>
+    
+  </div>
+
+  <script>
+    // 开通庆祝特效隐藏
+    setTimeout(() => {
+      const cel = document.getElementById('celebration');
+      cel.classList.add('opacity-0');
+      setTimeout(() => cel.classList.add('hidden'), 1000);
+    }, 2000);
+
+    // 录音交互
+    const audioWaves = document.getElementById('audio-waves');
+    const recordBtn = document.getElementById('record-btn');
+    
+    function startRecording() {
+      audioWaves.classList.remove('opacity-0');
+      recordBtn.classList.add('scale-90', 'bg-[#B8860B]');
+    }
+    function stopRecording() {
+      audioWaves.classList.add('opacity-0');
+      recordBtn.classList.remove('scale-90', 'bg-[#B8860B]');
+    }
+
+    // 步骤切换
+    const stepsWrapper = document.getElementById('steps-wrapper');
+    const dot1 = document.getElementById('dot-1');
+    const dot2 = document.getElementById('dot-2');
+
+    function nextStep() {
+      stepsWrapper.style.transform = 'translateX(-50%)';
+      dot1.classList.replace('bg-brand-premium', 'bg-neutral-300');
+      dot2.classList.replace('bg-neutral-300', 'bg-brand-premium');
+    }
+
+    // 模拟图片上传
+    function simulateUpload() {
+      document.getElementById('upload-placeholder').classList.add('hidden');
+      document.getElementById('preview-img').classList.remove('opacity-0');
+      document.getElementById('preview-overlay').classList.remove('opacity-0');
+    }
+
+    // 完成跳转
+    function goToHome() {
+      window.location.href = '01-home.html'; // 返回首页体验
+    }
+  </script>
+</body>
+</html>
