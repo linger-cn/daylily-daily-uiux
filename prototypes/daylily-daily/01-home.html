@@ -161,11 +161,16 @@
             </div>
 
             <!-- 状态 4: 今日达成 (All Done) -->
-            <div id="state-alldone" class="hidden flex flex-col items-center text-center">
-              <svg class="w-14 h-14 text-white" fill="currentColor" viewBox="0 0 24 24">
-                 <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14l-5-4.87 6.91-1.01L12 2z"></path>
+            <!-- 状态 4: 今日达成 (All Done) / 容错反转态 -->
+            <div id="state-alldone" class="hidden flex flex-col items-center text-center w-full px-4">
+              <svg class="w-12 h-12 text-white mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
               </svg>
-              <span class="text-lg font-bold text-white mt-2">今日已达标</span>
+              <span class="text-xl font-bold text-white tracking-wide">已打卡</span>
+              <div class="mt-1.5 flex items-center gap-1 opacity-70 bg-black/10 px-3 py-1 rounded-full">
+                <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path></svg>
+                <span class="text-[12px] font-bold text-white">点击撤销</span>
+              </div>
             </div>
 
             <!-- 状态 5: 个人空窗态 (Idle - Pure Caregiver) -->
@@ -371,11 +376,11 @@
       },
       'alldone': {
         color: 'bg-feedback-success',
-        shadow: 'shadow-[0_12px_40px_-10px_rgba(16,185,129,0.4)]',
-        glow: 'bg-feedback-success/40',
+        shadow: 'shadow-[inset_0_4px_12px_rgba(0,0,0,0.2)]', // 内阴影营造下沉感
+        glow: 'bg-feedback-success/20',
         ringColor: 'text-feedback-success',
         progress: 1.0,
-        clickable: false
+        clickable: true // 允许再次点击以撤销
       },
       'idle': {
         color: 'bg-amber-400',
@@ -388,10 +393,16 @@
     };
 
     let currentState = 'ready';
+    let previousState = 'ready'; // 记录历史态支持撤销
     const circleCircumference = 2 * Math.PI * 44; // ~276.46
 
     function setUIState(newState) {
       if (!config[newState]) return;
+      
+      // 记录撤销态
+      if (newState === 'alldone' && currentState !== 'alldone') {
+        previousState = currentState;
+      }
       
       // Hide all states
       Object.values(states).forEach(el => el.classList.add('hidden'));
@@ -458,6 +469,9 @@
     heroButton.addEventListener('click', () => {
       if (currentState === 'ready' || currentState === 'warning') {
          setUIState('alldone');
+      } else if (currentState === 'alldone') {
+         // 触发撤销机制，原地翻转回滚
+         setUIState(previousState);
       }
     });
   </script>
