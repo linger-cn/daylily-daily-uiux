@@ -58,6 +58,16 @@
       pointer-events: none;
     }
     #pro-hint.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
+    @keyframes bounceIn {
+      0% { opacity: 0; transform: scale(0.95); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+    .animate-bounce-in { animation: bounceIn 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+    @keyframes fadeInSoft {
+      from { opacity: 0; transform: translateY(5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in { animation: fadeInSoft 0.25s ease-out forwards; }
   </style>
 </head>
 <body class="bg-neutral-100 flex items-center justify-center min-h-screen font-sans antialiased text-[#4A443F]">
@@ -314,24 +324,187 @@
         </div>
       </section>
 
-      <!-- 🌟 Module 3: 提醒时间与周期 -->
+      <!-- 🌟 Module 3: 提醒排程 (Schedule Rule 深度改造) -->
       <section class="mb-10">
-        <h3 class="text-base font-bold text-[#8C847E] mb-4">要在哪个时间提醒？</h3>
-        <div class="flex items-center space-x-6">
-          <div class="relative w-[140px] min-h-[80px] py-3 bg-[#F9F7F3] rounded-[24px] flex items-center justify-center border-2 border-transparent focus-within:border-brand-primary active-overlay px-4">
-            <input type="time" value="08:00" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" onchange="document.getElementById('time-display').innerText = this.value">
-            <span id="time-display" class="text-[36px] font-bold text-[#2D2926] tracking-tight">08:00</span>
+        <div class="flex items-center justify-between mb-4 gap-2">
+          <h3 id="schedule-title" class="text-base font-bold text-[#8C847E] transition-colors line-clamp-1">每天什么时候吃？</h3>
+          <span id="expert-toggle-btn" class="text-[12px] text-brand-primary font-bold bg-brand-primary/10 px-3 py-1.5 rounded-full cursor-pointer active-overlay flex items-center gap-1.5 transition-all shrink-0" onclick="toggleExpertMode()">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
+            <span>复杂医嘱</span>
+          </span>
+        </div>
+
+        <!-- 🟦 基础模式 (80% 极简流) -->
+        <div id="schedule-basic-mode" class="animate-fade-in block">
+          <!-- 步骤 1：时段多选 -->
+          <div class="grid grid-cols-3 gap-2.5 mb-5">
+            <div class="schedule-segment-btn bg-brand-primary text-white border-brand-primary border text-[14px] font-bold py-2.5 rounded-xl cursor-pointer active-overlay transition-colors shadow-sm flex items-center justify-center" onclick="toggleSegment(this, 'morning')">☀️ 晨间</div>
+            <div class="schedule-segment-btn bg-white text-[#8C847E] border-neutral-200 border text-[14px] font-bold py-2.5 rounded-xl cursor-pointer active-overlay transition-colors flex items-center justify-center" onclick="toggleSegment(this, 'noon')">🍲 午间</div>
+            <div class="schedule-segment-btn bg-brand-primary text-white border-brand-primary border text-[14px] font-bold py-2.5 rounded-xl cursor-pointer active-overlay transition-colors shadow-sm flex items-center justify-center" onclick="toggleSegment(this, 'evening')">🌙 晚间</div>
           </div>
-          <div class="flex-1">
-            <div class="text-[14px] font-bold text-[#8C847E] mb-3">重复频次</div>
-            <select class="w-full bg-[#F9F7F3] text-[#2D2926] text-[16px] font-bold min-h-[48px] py-2 px-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-primary appearance-none">
-              <option value="daily" selected>每天</option>
-              <option value="every-other">隔天一次</option>
-              <option value="specific-day">特定星期...</option>
-              <option value="custom-cycle">做几休几...</option>
-            </select>
+
+          <!-- 步骤 2：对应时段的具体时间设定 -->
+          <div class="bg-[#F9F7F3] rounded-[24px] p-4 space-y-3 mb-8 border border-black/[0.03]">
+            <div id="time-slot-morning" class="flex items-center justify-between bg-white p-3 rounded-xl shadow-sm border border-black/[0.04]">
+              <div class="flex items-center gap-2 pl-1">
+                <span class="text-[18px]">☀️</span>
+                <span class="text-[15px] font-bold text-[#2D2926]">晨间提醒</span>
+              </div>
+              <div class="relative bg-neutral-50 px-4 py-2 rounded-lg border border-neutral-100 flex items-center active-overlay cursor-pointer">
+                <input type="time" value="08:00" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" onchange="this.nextElementSibling.innerText = this.value">
+                <span class="text-[20px] font-bold text-brand-primary tracking-tight">08:00</span>
+              </div>
+            </div>
+            
+            <div id="time-slot-noon" class="hidden items-center justify-between bg-white p-3 rounded-xl shadow-sm border border-black/[0.04]">
+              <div class="flex items-center gap-2 pl-1">
+                <span class="text-[18px]">🍲</span>
+                <span class="text-[15px] font-bold text-[#2D2926]">午间提醒</span>
+              </div>
+              <div class="relative bg-neutral-50 px-4 py-2 rounded-lg border border-neutral-100 flex items-center active-overlay cursor-pointer">
+                <input type="time" value="12:30" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" onchange="this.nextElementSibling.innerText = this.value">
+                <span class="text-[20px] font-bold text-brand-primary tracking-tight">12:30</span>
+              </div>
+            </div>
+
+            <div id="time-slot-evening" class="flex items-center justify-between bg-white p-3 rounded-xl shadow-sm border border-black/[0.04]">
+              <div class="flex items-center gap-2 pl-1">
+                <span class="text-[18px]">🌙</span>
+                <span class="text-[15px] font-bold text-[#2D2926]">晚间提醒</span>
+              </div>
+              <div class="relative bg-neutral-50 px-4 py-2 rounded-lg border border-neutral-100 flex items-center active-overlay cursor-pointer">
+                <input type="time" value="19:00" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" onchange="this.nextElementSibling.innerText = this.value">
+                <span class="text-[20px] font-bold text-brand-primary tracking-tight">19:00</span>
+              </div>
+            </div>
           </div>
         </div>
+
+        <!-- 🟥 高级医疗排程模式 (专家模式，默认隐藏) -->
+        <div id="schedule-expert-mode" class="hidden animate-fade-in mb-8">
+          <div class="bg-amber-50/70 border border-amber-200/80 rounded-[24px] p-4">
+            
+            <div class="flex bg-white/80 p-1.5 rounded-[16px] border border-black/5 mb-5 relative shadow-sm">
+               <div id="expert-tab-indicator" class="absolute top-1.5 bottom-1.5 left-1.5 w-[calc(33.33%-4px)] bg-brand-primary rounded-[12px] shadow-sm transition-transform duration-300 pointer-events-none"></div>
+               <button type="button" class="expert-tab-btn relative z-10 flex-1 py-2 text-[14px] font-bold text-white transition-colors" onclick="switchExpertTab(0)">规律跳过</button>
+               <button type="button" class="expert-tab-btn relative z-10 flex-1 py-2 text-[14px] font-bold text-[#8C847E] transition-colors" onclick="switchExpertTab(1)">吃停循环</button>
+               <button type="button" class="expert-tab-btn relative z-10 flex-1 py-2 text-[14px] font-bold text-[#8C847E] transition-colors" onclick="switchExpertTab(2)">交替递减</button>
+            </div>
+
+            <!-- Tab 1: 规律跳过 -->
+            <div id="expert-content-0" class="expert-content space-y-5 animate-fade-in">
+               <div>
+                  <p class="text-[14px] font-bold text-[#5C534A] mb-3">按特定星期：</p>
+                  <div class="flex justify-between gap-1">
+                     <div class="w-10 h-10 rounded-full bg-white border border-neutral-200 flex items-center justify-center text-[15px] font-bold text-[#8C847E] active-overlay cursor-pointer transition-colors" onclick="this.classList.toggle('bg-brand-primary'); this.classList.toggle('text-white'); this.classList.toggle('border-brand-primary');">一</div>
+                     <div class="w-10 h-10 rounded-full bg-brand-primary border border-brand-primary flex items-center justify-center text-[15px] font-bold text-white active-overlay cursor-pointer shadow-sm transition-colors" onclick="this.classList.toggle('bg-brand-primary'); this.classList.toggle('text-white'); this.classList.toggle('border-brand-primary');">二</div>
+                     <div class="w-10 h-10 rounded-full bg-white border border-neutral-200 flex items-center justify-center text-[15px] font-bold text-[#8C847E] active-overlay cursor-pointer transition-colors" onclick="this.classList.toggle('bg-brand-primary'); this.classList.toggle('text-white'); this.classList.toggle('border-brand-primary');">三</div>
+                     <div class="w-10 h-10 rounded-full bg-brand-primary border border-brand-primary flex items-center justify-center text-[15px] font-bold text-white active-overlay cursor-pointer shadow-sm transition-colors" onclick="this.classList.toggle('bg-brand-primary'); this.classList.toggle('text-white'); this.classList.toggle('border-brand-primary');">四</div>
+                     <div class="w-10 h-10 rounded-full bg-white border border-neutral-200 flex items-center justify-center text-[15px] font-bold text-[#8C847E] active-overlay cursor-pointer transition-colors" onclick="this.classList.toggle('bg-brand-primary'); this.classList.toggle('text-white'); this.classList.toggle('border-brand-primary');">五</div>
+                     <div class="w-10 h-10 rounded-full bg-white border border-neutral-200 flex items-center justify-center text-[15px] font-bold text-[#8C847E] active-overlay cursor-pointer transition-colors" onclick="this.classList.toggle('bg-brand-primary'); this.classList.toggle('text-white'); this.classList.toggle('border-brand-primary');">六</div>
+                     <div class="w-10 h-10 rounded-full bg-white border border-neutral-200 flex items-center justify-center text-[15px] font-bold text-[#8C847E] active-overlay cursor-pointer transition-colors" onclick="this.classList.toggle('bg-brand-primary'); this.classList.toggle('text-white'); this.classList.toggle('border-brand-primary');">日</div>
+                  </div>
+               </div>
+               <div class="flex items-center gap-4">
+                  <div class="flex-1 h-px bg-amber-200/60"></div>
+                  <span class="text-[12px] font-bold text-amber-700/60">或者</span>
+                  <div class="flex-1 h-px bg-amber-200/60"></div>
+               </div>
+               <div class="flex items-center justify-between bg-white p-3 rounded-xl border border-black/[0.04] shadow-sm">
+                  <span class="text-[15px] font-bold text-[#5C534A]">固定每隔几日吃</span>
+                  <div class="flex items-center gap-1.5">
+                     <span class="text-[14px] text-[#8C847E]">每隔</span>
+                     <input type="number" value="1" class="w-14 h-9 bg-neutral-50 border border-neutral-200 rounded-lg text-center text-[16px] font-bold text-brand-primary focus:outline-none focus:border-brand-primary">
+                     <span class="text-[14px] text-[#8C847E]">天</span>
+                  </div>
+               </div>
+            </div>
+
+            <!-- Tab 2: 吃停循环 -->
+            <div id="expert-content-1" class="expert-content hidden space-y-4 animate-fade-in">
+               <div class="bg-white p-3.5 rounded-xl border border-black/[0.04] flex items-center justify-between shadow-sm">
+                  <span class="text-[15px] font-bold text-[#5C534A]">连续吃药</span>
+                  <div class="flex items-center gap-1.5">
+                     <input type="number" value="21" class="w-14 h-9 bg-neutral-50 border border-neutral-200 rounded-lg text-center text-[16px] font-bold text-brand-primary focus:outline-none focus:border-brand-primary">
+                     <span class="text-[14px] text-[#8C847E]">天</span>
+                  </div>
+               </div>
+               <div class="flex justify-center -my-3 relative z-10"><div class="w-7 h-7 rounded-full bg-amber-100 flex items-center justify-center border-4 border-[#FFFDF8]"><svg class="w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg></div></div>
+               <div class="bg-white p-3.5 rounded-xl border border-black/[0.04] flex items-center justify-between shadow-sm">
+                  <span class="text-[15px] font-bold text-[#5C534A]">然后停药</span>
+                  <div class="flex items-center gap-1.5">
+                     <input type="number" value="7" class="w-14 h-9 bg-neutral-50 border border-neutral-200 rounded-lg text-center text-[16px] font-bold text-amber-600 focus:outline-none focus:border-amber-400">
+                     <span class="text-[14px] text-[#8C847E]">天</span>
+                  </div>
+               </div>
+               <p class="text-[12px] text-[#8C847E] text-center mt-3 flex justify-center items-center gap-1.5"><svg class="w-4 h-4 text-amber-600/70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg> 只要不结束疗程，该规律无限循环</p>
+            </div>
+
+            <!-- Tab 3: 复杂剂量 (交替/递减) -->
+            <div id="expert-content-2" class="expert-content hidden animate-fade-in">
+               <p class="text-[13px] text-amber-800/90 mb-4 leading-relaxed font-medium bg-amber-500/10 p-3 rounded-xl border border-amber-500/20">在此模式下，你只需在此设定每天的基本用量，然后通过日历将“特殊的某几天”覆盖为你想要的剂量（如华法林单双日，或激素递减）。</p>
+               <div class="bg-white rounded-[16px] border border-black/[0.04] p-4 shadow-sm">
+                  <div class="flex items-center justify-between mb-4">
+                     <span class="text-[15px] font-bold text-[#2D2926]">例外剂量规则表</span>
+                     <span class="text-[13px] font-bold text-white bg-brand-primary px-3 py-1.5 rounded-lg cursor-pointer active-overlay shadow-sm flex items-center gap-1"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg> 增加例外</span>
+                  </div>
+                  <!-- Example rule -->
+                  <div class="flex items-center justify-between bg-neutral-50 p-3 rounded-xl border border-neutral-100">
+                     <div class="flex items-center gap-2.5">
+                       <span class="text-[14px] font-bold text-[#5C534A]">每隔 1 天</span>
+                       <svg class="w-3.5 h-3.5 text-neutral-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                       <span class="text-[15px] font-bold text-brand-primary">改为 0.5 片</span>
+                     </div>
+                     <div class="w-8 h-8 rounded-full bg-red-50 text-red-500 flex items-center justify-center cursor-pointer active-overlay"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></div>
+                  </div>
+               </div>
+            </div>
+
+          </div>
+          
+          <!-- Shared time selection for expert mode -->
+          <div class="bg-white rounded-[20px] p-4 border border-black/[0.04] shadow-sm flex items-center justify-between">
+            <span class="text-[15px] font-bold text-[#2D2926]">每天的具体服药时刻</span>
+            <div class="relative bg-neutral-50 px-4 py-2.5 rounded-xl border border-neutral-200 flex items-center active-overlay cursor-pointer">
+              <input type="time" value="08:00" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" onchange="this.nextElementSibling.innerText = this.value">
+              <span class="text-[22px] font-bold text-brand-primary tracking-tight">08:00</span>
+            </div>
+          </div>
+          
+        </div>
+
+        <!-- 步骤 3：周期与期限 (落地 DDR 第5节 共识) -->
+        <h3 class="text-base font-bold text-[#8C847E] mb-3">要吃多久？</h3>
+        <div class="flex bg-neutral-200/50 p-1.5 rounded-[16px] relative mb-4">
+          <div id="duration-indicator" class="absolute top-1.5 bottom-1.5 left-1.5 w-[calc(50%-4px)] bg-white rounded-[12px] shadow-sm transition-transform duration-300 ease-in-out pointer-events-none border border-black/5"></div>
+          <button type="button" onclick="switchDuration('long')" class="duration-btn relative z-10 flex-1 py-2.5 text-[15px] font-bold text-[#2D2926] transition-colors">长期服用</button>
+          <button type="button" onclick="switchDuration('short')" class="duration-btn relative z-10 flex-1 py-2.5 text-[15px] font-bold text-[#8C847E] transition-colors">限期服用 (吃几天)</button>
+        </div>
+        
+        <!-- 限期服用展开区 -->
+        <div id="short-term-panel" class="hidden bg-[#F9F7F3] p-4 rounded-[20px] border border-black/[0.03]">
+          <p class="text-[13px] text-[#8C847E] mb-3 font-medium">快捷选择天数：</p>
+          <div class="flex flex-wrap gap-2.5">
+            <div class="bg-white border border-neutral-200 text-[#5C534A] text-[14px] font-bold px-4 py-2.5 rounded-xl cursor-pointer active-overlay shadow-sm hover:border-brand-primary/50" onclick="selectDays(7)">7 天</div>
+            <div class="bg-white border border-neutral-200 text-[#5C534A] text-[14px] font-bold px-4 py-2.5 rounded-xl cursor-pointer active-overlay shadow-sm hover:border-brand-primary/50" onclick="selectDays(14)">14 天</div>
+            <div class="bg-white border border-neutral-200 text-[#5C534A] text-[14px] font-bold px-4 py-2.5 rounded-xl cursor-pointer active-overlay shadow-sm hover:border-brand-primary/50" onclick="selectDays(30)">1 个月</div>
+            <div class="bg-white border border-brand-primary/30 text-brand-primary text-[14px] font-bold px-3 py-1.5 rounded-xl flex items-center gap-1 active-overlay">
+              <input type="number" placeholder="自定义" class="bg-transparent w-14 text-center focus:outline-none placeholder:font-normal placeholder:text-brand-primary/50 font-bold"> 天
+            </div>
+          </div>
+          <p class="text-[12px] text-[#8C847E] mt-4 flex items-center gap-1.5 bg-white py-2 px-3 rounded-lg border border-neutral-100">
+            <svg class="w-4 h-4 text-brand-primary/80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+            预计将在 <strong>5月14日</strong> 自动结束提醒
+          </p>
+        </div>
+        
+      </section>
+
+      <!-- 🌟 Module 4: 危险操作区 (仅在编辑模式可见，此处直接展示) -->
+      <section class="mt-8 mb-16 flex justify-center">
+        <button type="button" class="text-[14px] font-bold text-red-500/80 underline decoration-red-500/30 underline-offset-4 py-3 px-6 active-overlay rounded-xl hover:bg-red-50 transition-colors" onclick="openDeleteModal()">
+          删除此用药计划
+        </button>
       </section>
 
     </div>
@@ -410,6 +583,105 @@
       document.getElementById('dosage-input').value = val;
     }
 
+    let isExpertMode = false;
+    function toggleExpertMode() {
+      isExpertMode = !isExpertMode;
+      const title = document.getElementById('schedule-title');
+      const btn = document.getElementById('expert-toggle-btn');
+      const basic = document.getElementById('schedule-basic-mode');
+      const expert = document.getElementById('schedule-expert-mode');
+
+      if (isExpertMode) {
+        title.innerText = '正在配置复杂医嘱';
+        title.classList.replace('text-[#8C847E]', 'text-amber-600');
+        btn.classList.replace('bg-brand-primary/10', 'bg-neutral-100');
+        btn.classList.replace('text-brand-primary', 'text-[#8C847E]');
+        btn.querySelector('span').innerText = '返回常规排程';
+        
+        basic.classList.replace('block', 'hidden');
+        expert.classList.replace('hidden', 'block');
+      } else {
+        title.innerText = '每天什么时候吃？';
+        title.classList.replace('text-amber-600', 'text-[#8C847E]');
+        btn.classList.replace('bg-neutral-100', 'bg-brand-primary/10');
+        btn.classList.replace('text-[#8C847E]', 'text-brand-primary');
+        btn.querySelector('span').innerText = '复杂医嘱';
+        
+        expert.classList.replace('block', 'hidden');
+        basic.classList.replace('hidden', 'block');
+      }
+    }
+
+    function switchExpertTab(index) {
+      const indicator = document.getElementById('expert-tab-indicator');
+      const percentage = index * 100;
+      indicator.style.transform = `translateX(${percentage}%)`;
+
+      const btns = document.querySelectorAll('.expert-tab-btn');
+      btns.forEach((btn, i) => {
+        if (i === index) {
+          btn.classList.replace('text-[#8C847E]', 'text-white');
+        } else {
+          btn.classList.replace('text-white', 'text-[#8C847E]');
+        }
+      });
+
+      const contents = document.querySelectorAll('.expert-content');
+      contents.forEach((content, i) => {
+        if (i === index) {
+          content.classList.remove('hidden');
+        } else {
+          content.classList.add('hidden');
+        }
+      });
+    }
+
+    // ── Schedule 交互逻辑 ────────────────────────────────────────
+    function toggleSegment(btn, segment) {
+      const isSelected = btn.classList.contains('bg-brand-primary');
+      const timeSlot = document.getElementById('time-slot-' + segment);
+      
+      if (isSelected) {
+        // 取消选中
+        btn.classList.remove('bg-brand-primary', 'text-white', 'border-brand-primary', 'shadow-sm');
+        btn.classList.add('bg-white', 'text-[#8C847E]', 'border-neutral-200');
+        if (timeSlot) {
+          timeSlot.classList.remove('flex');
+          timeSlot.classList.add('hidden');
+        }
+      } else {
+        // 选中
+        btn.classList.add('bg-brand-primary', 'text-white', 'border-brand-primary', 'shadow-sm');
+        btn.classList.remove('bg-white', 'text-[#8C847E]', 'border-neutral-200');
+        if (timeSlot) {
+          timeSlot.classList.remove('hidden');
+          timeSlot.classList.add('flex');
+        }
+      }
+    }
+
+    function switchDuration(type) {
+      const indicator = document.getElementById('duration-indicator');
+      const btns = document.querySelectorAll('.duration-btn');
+      const panel = document.getElementById('short-term-panel');
+      
+      if (type === 'long') {
+        indicator.style.transform = 'translateX(0)';
+        btns[0].classList.replace('text-[#8C847E]', 'text-[#2D2926]');
+        btns[1].classList.replace('text-[#2D2926]', 'text-[#8C847E]');
+        panel.classList.add('hidden');
+      } else {
+        indicator.style.transform = 'translateX(100%)';
+        btns[1].classList.replace('text-[#8C847E]', 'text-[#2D2926]');
+        btns[0].classList.replace('text-[#2D2926]', 'text-[#8C847E]');
+        panel.classList.remove('hidden');
+      }
+    }
+    
+    function selectDays(days) {
+      alert(`前端演练：选中了 ${days} 天，底部预计结束日期会自动推算并更新。`);
+    }
+
     // ── Pro 升级提示 Toast ────────────────────────────────────────
     let proTimer = null;
     function showProHint() {
@@ -456,6 +728,41 @@
         }
       }
     });
+
+    // ── 危险操作弹窗 ──────────────────────────────────────────────
+    function openDeleteModal() {
+      document.getElementById('delete-modal').classList.remove('hidden');
+    }
+    function closeDeleteModal() {
+      document.getElementById('delete-modal').classList.add('hidden');
+    }
+    function executeDelete() {
+      closeDeleteModal();
+      setTimeout(() => {
+        alert("已彻底删除该计划及历史记录（前端原型示意）。");
+        window.location.href = '03-plan-list.html';
+      }, 100);
+    }
   </script>
+
+  <!-- 危险操作确认弹窗 (Delete Confirm Modal) -->
+  <div id="delete-modal" class="fixed inset-0 z-[100] flex items-center justify-center hidden">
+    <!-- 遮罩 -->
+    <div class="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity" onclick="closeDeleteModal()"></div>
+    <!-- 弹窗主体 -->
+    <div class="bg-white w-[85%] max-w-[320px] rounded-[24px] shadow-2xl relative z-10 flex flex-col overflow-hidden animate-bounce-in">
+      <div class="p-6 pb-5 flex flex-col items-center text-center">
+        <div class="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center mb-4">
+          <svg class="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+        </div>
+        <h3 class="text-[18px] font-bold text-[#2D2926] mb-2">确定彻底删除吗？</h3>
+        <p class="text-[13px] text-[#8C847E] leading-relaxed">删除后，该计划及过去所有的打卡记录将一并清除且无法恢复。<br><br>如果不吃了，建议回到列表选择<strong class="text-amber-600">「暂停用药」</strong>或<strong class="text-amber-600">「结束疗程」</strong>。</p>
+      </div>
+      <div class="grid grid-cols-2 border-t border-neutral-100 bg-neutral-50/50">
+        <button class="py-4 text-[16px] font-bold text-[#8C847E] border-r border-neutral-100 active-overlay" onclick="closeDeleteModal()">我再想想</button>
+        <button class="py-4 text-[16px] font-bold text-red-500 active-overlay" onclick="executeDelete()">坚决删除</button>
+      </div>
+    </div>
+  </div>
 </body>
 </html>

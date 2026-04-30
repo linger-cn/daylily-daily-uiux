@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN" class="light">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -38,47 +39,110 @@
     }
   </script>
   <style>
-    .no-scrollbar::-webkit-scrollbar { display: none; }
-    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-    .active-overlay { position: relative; overflow: hidden; }
-    .active-overlay::after { content: ''; position: absolute; inset: 0; background-color: rgba(0,0,0,0); transition: background-color 0.1s; pointer-events: none; }
-    .active-overlay:active::after { background-color: rgba(0,0,0,0.08); }
-    
-    /* 胶囊切换平滑过渡 */
-    .tab-content { display: none; animation: fadeIn 0.3s ease; }
-    .tab-content.active { display: block; }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(5px); }
-      to { opacity: 1; transform: translateY(0); }
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
     }
+
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    .active-overlay {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .active-overlay::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-color: rgba(0, 0, 0, 0);
+      transition: background-color 0.1s;
+      pointer-events: none;
+    }
+
+    .active-overlay:active::after {
+      background-color: rgba(0, 0, 0, 0.08);
+    }
+
+    /* 胶囊切换平滑过渡 */
+    .tab-content {
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(5px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
     /* 用药计划列表项：展开操作区 */
-    .plan-item-actions { max-height: 0; overflow: hidden; transition: max-height 0.32s ease; }
-    .plan-list-item.is-open .plan-item-actions { max-height: 200px; }
-    .plan-item-chevron { transition: transform 0.25s ease; }
-    .plan-list-item.is-open .plan-item-chevron { transform: rotate(180deg); }
-    .plan-chip { font-size: 10px; line-height: 1.2; padding: 3px 7px; border-radius: 9999px; font-weight: 600; letter-spacing: 0.02em; }
+    .plan-item-actions {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.32s ease;
+    }
+
+    .plan-list-item.is-open .plan-item-actions {
+      max-height: 200px;
+    }
+
+    .plan-item-chevron {
+      transition: transform 0.25s ease;
+    }
+
+    .plan-list-item.is-open .plan-item-chevron {
+      transform: rotate(180deg);
+    }
+
+    .plan-chip {
+      font-size: 10px;
+      line-height: 1.2;
+      padding: 3px 7px;
+      border-radius: 9999px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
   </style>
 </head>
+
 <body class="bg-neutral-100 flex items-center justify-center min-h-screen font-sans antialiased text-[#4A443F]">
   <!-- Mobile Container -->
-  <div class="relative w-full max-w-[375px] h-[812px] bg-[#F9F7F3] shadow-2xl overflow-hidden flex flex-col border-[8px] border-neutral-900 rounded-[50px]">
-    
+  <div
+    class="relative w-full max-w-[375px] h-[812px] bg-[#F9F7F3] shadow-2xl overflow-hidden flex flex-col border-[8px] border-neutral-900 rounded-[50px]">
+
     <!-- 1. Header NavBar with Add Button -->
     <div class="shrink-0 z-50 bg-[#F9F7F3]/90 backdrop-blur-md pb-3">
       <!-- 状态栏占位 -->
       <div class="h-11 w-full"></div>
       <!-- 标题栏 -->
       <div class="h-11 w-full flex items-center justify-between px-4 relative">
-        <div class="w-[87px] flex items-center active-overlay cursor-pointer" onclick="window.location.href='02-profile.html'">
-           <svg class="w-6 h-6 text-[#2D2926]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path></svg>
+        <div class="w-[87px] flex items-center active-overlay cursor-pointer"
+          onclick="window.location.href='02-profile.html'">
+          <svg class="w-6 h-6 text-[#2D2926]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path>
+          </svg>
         </div>
         <h2 class="text-[19px] font-bold text-[#2D2926]">日常用药</h2>
         <!-- 微信小程序右上角原生胶囊占位 -->
-        <div class="w-[87px] h-8 bg-black/5 rounded-full border border-black/5 flex items-center justify-around px-2 py-1 opacity-40">
-           <div class="w-1.5 h-1.5 rounded-full bg-black"></div>
-           <div class="w-1 h-1 rounded-full bg-black"></div>
-           <div class="w-[1px] h-3 bg-black/20"></div>
-           <div class="w-4 h-4 rounded-full border-2 border-black"></div>
+        <div
+          class="w-[87px] h-8 bg-black/5 rounded-full border border-black/5 flex items-center justify-around px-2 py-1 opacity-40">
+          <div class="w-1.5 h-1.5 rounded-full bg-black"></div>
+          <div class="w-1 h-1 rounded-full bg-black"></div>
+          <div class="w-[1px] h-3 bg-black/20"></div>
+          <div class="w-4 h-4 rounded-full border-2 border-black"></div>
         </div>
       </div>
 
@@ -86,17 +150,22 @@
       <div class="px-5 mt-4">
         <div class="flex bg-neutral-200/50 p-1.5 rounded-2xl relative">
           <!-- Active Background Indicator (Mocked physically for DOM #1) -->
-          <div id="tab-indicator" class="absolute top-1.5 bottom-1.5 left-1.5 w-[calc(33.33%-4px)] bg-white rounded-xl shadow-sm transition-transform duration-300 ease-in-out pointer-events-none border border-black/5"></div>
-          
-          <button onclick="switchTab(0)" class="tab-btn relative z-10 flex-1 flex flex-col items-center justify-center py-2 text-[#2D2926] transition-colors">
+          <div id="tab-indicator"
+            class="absolute top-1.5 bottom-1.5 left-1.5 w-[calc(33.33%-4px)] bg-white rounded-xl shadow-sm transition-transform duration-300 ease-in-out pointer-events-none border border-black/5">
+          </div>
+
+          <button onclick="switchTab(0)"
+            class="tab-btn relative z-10 flex-1 flex flex-col items-center justify-center py-2 text-[#2D2926] transition-colors">
             <span class="text-base font-bold">晨间</span>
             <span class="text-[11px] font-medium opacity-60 mt-0.5">06:00-11:00</span>
           </button>
-          <button onclick="switchTab(1)" class="tab-btn relative z-10 flex-1 flex flex-col items-center justify-center py-2 text-[#8C847E] transition-colors">
+          <button onclick="switchTab(1)"
+            class="tab-btn relative z-10 flex-1 flex flex-col items-center justify-center py-2 text-[#8C847E] transition-colors">
             <span class="text-base font-bold">午间</span>
             <span class="text-[11px] font-medium opacity-60 mt-0.5">11:00-15:00</span>
           </button>
-          <button onclick="switchTab(2)" class="tab-btn relative z-10 flex-1 flex flex-col items-center justify-center py-2 text-[#8C847E] transition-colors">
+          <button onclick="switchTab(2)"
+            class="tab-btn relative z-10 flex-1 flex flex-col items-center justify-center py-2 text-[#8C847E] transition-colors">
             <span class="text-base font-bold">晚间</span>
             <span class="text-[11px] font-medium opacity-60 mt-0.5">15:00-24:00</span>
           </button>
@@ -111,107 +180,189 @@
       <div id="tab-0" class="tab-content active pt-4">
         <div class="space-y-3">
 
-          <!-- 项 1：进行中 · 我为执行者代管 · 可编辑 -->
-          <article class="plan-list-item bg-white rounded-[20px] shadow-brand-sm overflow-hidden border border-black/[0.04] relative" data-state="active">
-            <div class="absolute left-0 top-0 bottom-0 w-1 bg-brand-primary z-[1]"></div>
-            <div class="flex items-stretch pl-1">
-              <div class="flex flex-col items-center justify-center w-[72px] shrink-0 py-3.5 border-r border-[#F9F7F3] pl-0.5">
-                <span class="text-[20px] font-bold text-[#2D2926] tracking-tight leading-none">08:00</span>
-                <p class="text-[9px] text-[#8C847E] text-center leading-tight mt-1.5 px-0.5 font-medium">参考时刻<br>提醒约±15分</p>
+          <!-- ========================================== -->
+          <!-- 状态 1：正常进行中（极简、大热区） -->
+          <!-- ========================================== -->
+          <article
+            class="plan-list-item bg-white rounded-[20px] shadow-sm shadow-black/[0.03] overflow-hidden border border-black/[0.06] relative group cursor-pointer transition-transform active:scale-[0.98]"
+            data-state="active" onclick="togglePlanItem(this)">
+            <!-- 左侧品牌色粗线 -->
+            <div class="absolute left-0 top-0 bottom-0 w-1.5 bg-brand-primary z-[1]"></div>
+
+            <div class="flex items-stretch pl-1.5 relative">
+              <!-- 时间脊椎 -->
+              <div
+                class="flex flex-col items-center justify-center w-[72px] shrink-0 py-4 border-r border-neutral-100 pr-1">
+                <span class="text-[22px] font-bold text-[#2D2926] tracking-tight leading-none">08:00</span>
+                <p class="text-[10px] text-[#8C847E] text-center leading-tight mt-1.5 font-medium">约±15分</p>
               </div>
-              <div class="flex-1 min-w-0 py-3 pl-3 pr-1 flex flex-col justify-center active-overlay cursor-pointer" role="button" tabindex="0" onclick="openPlanStub('detail','红盒子降压药')">
-                <h3 class="text-[17px] font-bold text-[#2D2926] leading-snug pr-1">红盒子降压药</h3>
-                <p class="text-[13px] text-[#8C847E] font-medium mt-1 flex items-center gap-1">
-                  <svg class="w-3.5 h-3.5 shrink-0 opacity-75" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+
+              <!-- 核心信息区 -->
+              <div class="flex-1 min-w-0 py-4 pl-3.5 pr-2 flex flex-col justify-center">
+                <h3 class="text-[18px] font-bold text-[#2D2926] leading-snug truncate pr-2">红盒子降压药</h3>
+                <p class="text-[14px] text-[#5C534A] font-medium mt-1.5 flex items-center gap-1.5">
+                  <svg class="w-4 h-4 shrink-0 text-[#8C847E]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10">
+                    </path>
+                  </svg>
                   1 片
                 </p>
-                <div class="flex flex-wrap items-center gap-1.5 mt-2">
-                  <span class="plan-chip bg-[#F0EBE3] text-[#5C534A]">执行 · 王阿姨</span>
-                  <span class="plan-chip bg-emerald-50 text-emerald-800 border border-emerald-100/80">进行中</span>
-                  <span class="plan-chip bg-white text-[#8C847E] border border-neutral-200/90">我创建的</span>
+                <!-- 降噪后的标签：去掉了冗余的"进行中"和"我创建" -->
+                <div class="flex flex-wrap items-center gap-2 mt-2.5">
+                  <span
+                    class="bg-[#F0EBE3] text-[#5C534A] px-2 py-0.5 rounded-md text-[11px] font-bold tracking-wide">执行 ·
+                    王阿姨</span>
                 </div>
               </div>
-              <div class="flex flex-col items-center justify-center w-11 shrink-0 pr-2 pt-1">
-                <button type="button" class="plan-item-chevron w-10 h-10 rounded-full bg-neutral-50 flex items-center justify-center text-[#6B6560] active-overlay border border-neutral-100" aria-expanded="false" aria-label="展开操作" onclick="event.stopPropagation(); togglePlanItem(this)">
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M19 9l-7 7-7-7"></path></svg>
-                </button>
+
+              <!-- 视觉展开指引 (穿透点击，由外层 article 接管) -->
+              <div class="flex flex-col items-center justify-center w-10 shrink-0 pr-2 pointer-events-none">
+                <div
+                  class="plan-item-chevron w-8 h-8 rounded-full bg-neutral-50 flex items-center justify-center text-[#8C847E] group-hover:bg-neutral-100 transition-colors">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path>
+                  </svg>
+                </div>
               </div>
             </div>
-            <div class="plan-item-actions border-t border-[#F0EBE3]/80 bg-[#FCFAF7]">
-              <div class="px-3 py-3 grid grid-cols-2 gap-2">
-                <button type="button" class="min-h-[44px] rounded-xl bg-white border border-neutral-200/90 text-[14px] font-bold text-[#2D2926] active-overlay shadow-sm" onclick="event.stopPropagation(); window.location.href='04-plan-create.html'">编辑计划</button>
-                <button type="button" class="min-h-[44px] rounded-xl bg-white border border-amber-200/90 text-[14px] font-bold text-amber-900/90 active-overlay" onclick="event.stopPropagation(); planDemoFeedback(this,'已暂停（示意）')">暂停用药</button>
-                <button type="button" class="min-h-[44px] rounded-xl bg-white/60 border border-neutral-100 text-[13px] font-semibold text-[#8C847E] col-span-2 active-overlay" onclick="event.stopPropagation(); openPlanStub('detail','红盒子降压药')">查看计划详情</button>
+
+            <!-- 展开操作面板 -->
+            <div class="plan-item-actions border-t border-neutral-100 bg-[#FCFAF7]">
+              <!-- 移除了没用的“详情”，按钮变大，更容易点 -->
+              <div class="px-4 py-3.5 grid grid-cols-2 gap-3">
+                <button type="button"
+                  class="min-h-[48px] rounded-xl bg-white border border-neutral-200 shadow-sm text-[15px] font-bold text-[#2D2926] active-overlay"
+                  onclick="event.stopPropagation(); window.location.href='04-plan-create.html'">编辑计划</button>
+                <button type="button"
+                  class="min-h-[48px] rounded-xl bg-white border border-amber-200 text-[15px] font-bold text-amber-900 active-overlay"
+                  onclick="event.stopPropagation(); planDemoFeedback(this,'已暂停（示意）')">暂停用药</button>
               </div>
             </div>
           </article>
 
-          <!-- 项 2：已暂停 · 仍可看详情与恢复 -->
-          <article class="plan-list-item bg-white rounded-[20px] shadow-brand-sm overflow-hidden border border-black/[0.04] relative opacity-[0.97]" data-state="paused">
-            <div class="absolute left-0 top-0 bottom-0 w-1 bg-amber-500 z-[1]"></div>
-            <div class="flex items-stretch pl-1">
-              <div class="flex flex-col items-center justify-center w-[72px] shrink-0 py-3.5 border-r border-[#F9F7F3] pl-0.5">
-                <span class="text-[20px] font-bold text-[#8C847E] tracking-tight leading-none">08:30</span>
-                <p class="text-[9px] text-[#8C847E] text-center leading-tight mt-1.5 px-0.5 font-medium">不产生<br>新提醒</p>
+
+          <!-- ========================================== -->
+          <!-- 状态 2：已暂停（强视觉打断） -->
+          <!-- ========================================== -->
+          <article
+            class="plan-list-item bg-neutral-50/70 rounded-[20px] overflow-hidden border border-neutral-200 relative group cursor-pointer active:scale-[0.98] transition-transform"
+            data-state="paused" onclick="togglePlanItem(this)">
+            <div class="absolute left-0 top-0 bottom-0 w-1.5 bg-amber-400 z-[1]"></div>
+
+            <div class="flex items-stretch pl-1.5 relative opacity-85 grayscale-[0.2]">
+              <div
+                class="flex flex-col items-center justify-center w-[72px] shrink-0 py-4 border-r border-neutral-200/50 pr-1">
+                <!-- 醒目的删除线 -->
+                <span
+                  class="text-[22px] font-bold text-[#8C847E] tracking-tight leading-none line-through decoration-amber-400 decoration-2">08:30</span>
               </div>
-              <div class="flex-1 min-w-0 py-3 pl-3 pr-1 flex flex-col justify-center active-overlay cursor-pointer" role="button" tabindex="0" onclick="openPlanStub('detail','复合维生素')">
-                <h3 class="text-[17px] font-bold text-[#5C534A] leading-snug pr-1">复合维生素</h3>
-                <p class="text-[13px] text-[#8C847E] font-medium mt-1 flex items-center gap-1">
-                  <svg class="w-3.5 h-3.5 shrink-0 opacity-75" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+
+              <div class="flex-1 min-w-0 py-4 pl-3.5 pr-2 flex flex-col justify-center">
+                <h3 class="text-[18px] font-bold text-[#8C847E] leading-snug truncate pr-2">复合维生素</h3>
+                <p class="text-[14px] text-[#8C847E] font-medium mt-1.5 flex items-center gap-1.5">
+                  <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10">
+                    </path>
+                  </svg>
                   1 粒
                 </p>
-                <div class="flex flex-wrap items-center gap-1.5 mt-2">
-                  <span class="plan-chip bg-[#F0EBE3] text-[#5C534A]">执行 · 本人</span>
-                  <span class="plan-chip bg-amber-50 text-amber-900 border border-amber-100/90">已暂停</span>
-                  <span class="plan-chip bg-white text-[#8C847E] border border-neutral-200/90">我创建的</span>
+                <div class="flex flex-wrap items-center gap-2 mt-2.5">
+                  <!-- 强化暂停标签感知 -->
+                  <span
+                    class="bg-amber-100/60 text-amber-800 px-2 py-0.5 rounded-md text-[11px] font-bold flex items-center gap-1">
+                    <div class="w-1.5 h-1.5 rounded-full bg-amber-500"></div> 已暂停
+                  </span>
                 </div>
               </div>
-              <div class="flex flex-col items-center justify-center w-11 shrink-0 pr-2 pt-1">
-                <button type="button" class="plan-item-chevron w-10 h-10 rounded-full bg-neutral-50 flex items-center justify-center text-[#6B6560] active-overlay border border-neutral-100" aria-expanded="false" aria-label="展开操作" onclick="event.stopPropagation(); togglePlanItem(this)">
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M19 9l-7 7-7-7"></path></svg>
-                </button>
+
+              <div class="flex flex-col items-center justify-center w-10 shrink-0 pr-2 pointer-events-none">
+                <div class="plan-item-chevron w-8 h-8 rounded-full flex items-center justify-center text-[#8C847E]">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path>
+                  </svg>
+                </div>
               </div>
             </div>
-            <div class="plan-item-actions border-t border-[#F0EBE3]/80 bg-amber-50/40">
-              <div class="px-3 py-3 grid grid-cols-2 gap-2">
-                <button type="button" class="min-h-[44px] rounded-xl bg-brand-primary text-white text-[14px] font-bold active-overlay shadow-sm border border-black/5" onclick="event.stopPropagation(); planDemoFeedback(this,'已恢复（示意）')">恢复用药</button>
-                <button type="button" class="min-h-[44px] rounded-xl bg-white border border-neutral-200/90 text-[14px] font-bold text-[#5C534A] active-overlay" onclick="event.stopPropagation(); planDemoFeedback(this,'已结束疗程（示意）')">结束疗程</button>
-                <button type="button" class="min-h-[44px] rounded-xl bg-white/70 border border-neutral-100 text-[13px] font-semibold text-[#8C847E] col-span-2 active-overlay" onclick="event.stopPropagation(); openPlanStub('detail','复合维生素')">查看计划详情</button>
+
+            <div class="plan-item-actions border-t border-amber-100/60 bg-amber-50/40">
+              <div class="px-4 py-3.5 grid grid-cols-2 gap-3">
+                <!-- 恢复按钮使用强烈的品牌色拉回用户 -->
+                <button type="button"
+                  class="min-h-[48px] rounded-xl bg-brand-primary text-white shadow-sm text-[15px] font-bold active-overlay"
+                  onclick="event.stopPropagation(); planDemoFeedback(this,'已恢复（示意）')">恢复用药</button>
+                <button type="button"
+                  class="min-h-[48px] rounded-xl bg-white border border-neutral-200 text-[15px] font-bold text-[#8C847E] active-overlay"
+                  onclick="event.stopPropagation(); planDemoFeedback(this,'已结束（示意）')">结束疗程</button>
               </div>
             </div>
           </article>
 
-          <!-- 项 3：他人创建 · 只读（R-PL-4） -->
-          <article class="plan-list-item bg-white rounded-[20px] shadow-brand-sm overflow-hidden border border-black/[0.04] relative" data-state="active" data-readonly="1">
-            <div class="absolute left-0 top-0 bottom-0 w-1 bg-[#C4BFB8] z-[1]"></div>
-            <div class="flex items-stretch pl-1">
-              <div class="flex flex-col items-center justify-center w-[72px] shrink-0 py-3.5 border-r border-[#F9F7F3] pl-0.5">
-                <span class="text-[20px] font-bold text-[#2D2926] tracking-tight leading-none">09:00</span>
-                <p class="text-[9px] text-[#8C847E] text-center leading-tight mt-1.5 px-0.5 font-medium">参考时刻<br>提醒约±15分</p>
+
+          <!-- ========================================== -->
+          <!-- 状态 3：他人代管/只读（温情化权限阻断） -->
+          <!-- ========================================== -->
+          <article
+            class="plan-list-item bg-white rounded-[20px] shadow-sm shadow-black/[0.03] overflow-hidden border border-black/[0.06] relative group cursor-pointer active:scale-[0.98] transition-transform"
+            data-state="readonly" onclick="togglePlanItem(this)">
+            <div class="absolute left-0 top-0 bottom-0 w-1.5 bg-neutral-300 z-[1]"></div>
+
+            <div class="flex items-stretch pl-1.5 relative">
+              <div
+                class="flex flex-col items-center justify-center w-[72px] shrink-0 py-4 border-r border-neutral-100 pr-1">
+                <span class="text-[22px] font-bold text-[#2D2926] tracking-tight leading-none">09:00</span>
               </div>
-              <div class="flex-1 min-w-0 py-3 pl-3 pr-1 flex flex-col justify-center active-overlay cursor-pointer" role="button" tabindex="0" onclick="openPlanStub('detail','钙片+D3')">
-                <h3 class="text-[17px] font-bold text-[#2D2926] leading-snug pr-1">钙片 + D3</h3>
-                <p class="text-[13px] text-[#8C847E] font-medium mt-1 flex items-center gap-1">
-                  <svg class="w-3.5 h-3.5 shrink-0 opacity-75" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+
+              <div class="flex-1 min-w-0 py-4 pl-3.5 pr-2 flex flex-col justify-center">
+                <div class="flex items-center justify-between">
+                  <h3 class="text-[18px] font-bold text-[#2D2926] leading-snug truncate pr-2">钙片 + D3</h3>
+                  <!-- 标题尾部加锁，不用说话就明白权限受限 -->
+                  <svg class="w-4 h-4 text-neutral-300 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z">
+                    </path>
+                  </svg>
+                </div>
+                <p class="text-[14px] text-[#5C534A] font-medium mt-1.5 flex items-center gap-1.5">
+                  <svg class="w-4 h-4 shrink-0 text-[#8C847E]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10">
+                    </path>
+                  </svg>
                   各 1 粒 · 随餐
                 </p>
-                <div class="flex flex-wrap items-center gap-1.5 mt-2">
-                  <span class="plan-chip bg-[#F0EBE3] text-[#5C534A]">执行 · 王阿姨</span>
-                  <span class="plan-chip bg-emerald-50 text-emerald-800 border border-emerald-100/80">进行中</span>
-                  <span class="plan-chip bg-violet-50 text-violet-900 border border-violet-100/80">女儿创建</span>
-                  <span class="plan-chip bg-neutral-100 text-neutral-600 border border-neutral-200/80">仅查看</span>
+
+                <div class="flex flex-wrap items-center gap-2 mt-2.5">
+                  <span
+                    class="bg-violet-50 text-violet-800 border border-violet-100/80 px-2 py-0.5 rounded-md text-[11px] font-bold">女儿管理</span>
                 </div>
               </div>
-              <div class="flex flex-col items-center justify-center w-11 shrink-0 pr-2 pt-1">
-                <button type="button" class="plan-item-chevron w-10 h-10 rounded-full bg-neutral-50 flex items-center justify-center text-[#6B6560] active-overlay border border-neutral-100" aria-expanded="false" aria-label="展开操作" onclick="event.stopPropagation(); togglePlanItem(this)">
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M19 9l-7 7-7-7"></path></svg>
-                </button>
+
+              <div class="flex flex-col items-center justify-center w-10 shrink-0 pr-2 pointer-events-none">
+                <div
+                  class="plan-item-chevron w-8 h-8 rounded-full bg-neutral-50 flex items-center justify-center text-[#8C847E] group-hover:bg-neutral-100 transition-colors">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path>
+                  </svg>
+                </div>
               </div>
             </div>
-            <div class="plan-item-actions border-t border-[#F0EBE3]/80 bg-[#FCFAF7]">
-              <div class="px-3 py-3 flex flex-col gap-2">
-                <button type="button" class="min-h-[44px] rounded-xl bg-white border border-neutral-200/90 text-[14px] font-bold text-[#2D2926] active-overlay shadow-sm" onclick="event.stopPropagation(); openPlanStub('detail','钙片+D3')">查看计划详情</button>
-                <p class="text-[11px] text-[#8C847E] text-center leading-relaxed px-1">编辑与暂停仅创建者可操作；漏服补救在打卡页。</p>
+
+            <!-- 将死板的“提示文字”变成温馨的家庭状态版面 -->
+            <div class="plan-item-actions border-t border-neutral-100 bg-[#FCFAF7]">
+              <div class="px-5 py-4 flex items-start gap-3">
+                <div class="mt-0.5 w-8 h-8 rounded-full bg-violet-100 flex items-center justify-center shrink-0">
+                  <svg class="w-4 h-4 text-violet-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                      d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                  </svg>
+                </div>
+                <div>
+                  <h4 class="text-[14px] font-bold text-[#2D2926]">由女儿“小小萱”创建与管理</h4>
+                  <p class="text-[12px] text-[#8C847E] leading-relaxed mt-1.5">
+                    若需修改用药时间或剂量，请联系她操作。<br>若今天忘记吃药，可前往首页日签进行补卡。</p>
+                </div>
               </div>
             </div>
           </article>
@@ -221,40 +372,61 @@
 
       <!-- Noon Tab Content (Empty State Simulation) -->
       <div id="tab-1" class="tab-content pt-16">
-         <div class="flex flex-col items-center justify-center px-6">
-            <div class="w-32 h-32 rounded-full bg-neutral-100 border-4 border-white shadow-sm flex items-center justify-center text-neutral-300 mb-6">
-               <svg class="w-16 h-16" fill="currentColor" viewBox="0 0 24 24"><path d="M11 7h2v2h-2zm0 4h2v6h-2zm1-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
-            </div>
-            <h3 class="text-[17px] font-bold text-[#8C847E]">午间没有用药安排</h3>
-            <p class="text-sm text-[#8C847E]/60 text-center mt-2">给药箱减负，午间好好休息吧 ~</p>
-            
-            <button class="mt-8 bg-white border border-neutral-200 text-[#2D2926] text-base font-bold px-8 py-3.5 rounded-full shadow-sm active-overlay flex items-center">
-               <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg>添加午间提醒
-            </button>
-         </div>
+        <div class="flex flex-col items-center justify-center px-6">
+          <div
+            class="w-32 h-32 rounded-full bg-neutral-100 border-4 border-white shadow-sm flex items-center justify-center text-neutral-300 mb-6">
+            <svg class="w-16 h-16" fill="currentColor" viewBox="0 0 24 24">
+              <path
+                d="M11 7h2v2h-2zm0 4h2v6h-2zm1-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" />
+            </svg>
+          </div>
+          <h3 class="text-[17px] font-bold text-[#8C847E]">午间没有用药安排</h3>
+          <p class="text-sm text-[#8C847E]/60 text-center mt-2">给药箱减负，午间好好休息吧 ~</p>
+
+          <button
+            class="mt-8 bg-white border border-neutral-200 text-[#2D2926] text-base font-bold px-8 py-3.5 rounded-full shadow-sm active-overlay flex items-center">
+            <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path>
+            </svg>添加午间提醒
+          </button>
+        </div>
       </div>
 
       <!-- Evening Tab Content -->
       <div id="tab-2" class="tab-content pt-4">
         <div class="space-y-3">
-          <article class="plan-list-item bg-white rounded-[20px] shadow-brand-sm overflow-hidden border border-black/[0.04] relative" data-state="active">
+          <article
+            class="plan-list-item bg-white rounded-[20px] shadow-brand-sm overflow-hidden border border-black/[0.04] relative"
+            data-state="active">
             <div class="absolute left-0 top-0 bottom-0 w-1 bg-brand-primary z-[1]"></div>
             <div class="flex items-stretch pl-1">
-              <div class="flex flex-col items-center justify-center w-[72px] shrink-0 py-3.5 border-r border-[#F9F7F3] pl-0.5">
+              <div
+                class="flex flex-col items-center justify-center w-[72px] shrink-0 py-3.5 border-r border-[#F9F7F3] pl-0.5">
                 <span class="text-[20px] font-bold text-[#2D2926] tracking-tight leading-none">19:00</span>
-                <p class="text-[9px] text-[#8C847E] text-center leading-tight mt-1.5 px-0.5 font-medium">参考时刻<br>提醒约±15分</p>
+                <p class="text-[9px] text-[#8C847E] text-center leading-tight mt-1.5 px-0.5 font-medium">参考时刻<br>提醒约±15分
+                </p>
               </div>
-              <div class="flex-1 min-w-0 py-3 pl-3 pr-1 flex flex-col justify-center active-overlay cursor-pointer" role="button" tabindex="0" onclick="openPlanStub('detail','深海鱼油')">
+              <div class="flex-1 min-w-0 py-3 pl-3 pr-1 flex flex-col justify-center active-overlay cursor-pointer"
+                role="button" tabindex="0" onclick="openPlanStub('detail','深海鱼油')">
                 <h3 class="text-[17px] font-bold text-[#2D2926] leading-snug pr-1">深海鱼油</h3>
                 <p class="text-[13px] text-[#8C847E] font-medium mt-1 flex items-center gap-1">
-                  <svg class="w-3.5 h-3.5 shrink-0 opacity-75" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                  <svg class="w-3.5 h-3.5 shrink-0 opacity-75" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10">
+                    </path>
+                  </svg>
                   饭后 1 粒
                 </p>
                 <div class="flex flex-wrap items-center gap-1.5 mt-2">
                   <span class="plan-chip bg-[#F0EBE3] text-[#5C534A]">执行 · 本人</span>
                   <span class="plan-chip bg-emerald-50 text-emerald-800 border border-emerald-100/80">进行中</span>
-                  <span class="plan-chip bg-slate-100 text-slate-700 border border-slate-200/90 inline-flex items-center gap-0.5">
-                    <svg class="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path></svg>
+                  <span
+                    class="plan-chip bg-slate-100 text-slate-700 border border-slate-200/90 inline-flex items-center gap-0.5">
+                    <svg class="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd"
+                        d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
+                        clip-rule="evenodd"></path>
+                    </svg>
                     私密
                   </span>
                   <span class="plan-chip bg-white text-[#8C847E] border border-neutral-200/90">我创建的</span>
@@ -262,16 +434,26 @@
                 <p class="text-[10px] text-[#8C847E]/85 mt-1.5 leading-snug">家属端列表不会出现本条（示意）</p>
               </div>
               <div class="flex flex-col items-center justify-center w-11 shrink-0 pr-2 pt-1">
-                <button type="button" class="plan-item-chevron w-10 h-10 rounded-full bg-neutral-50 flex items-center justify-center text-[#6B6560] active-overlay border border-neutral-100" aria-expanded="false" aria-label="展开操作" onclick="event.stopPropagation(); togglePlanItem(this)">
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M19 9l-7 7-7-7"></path></svg>
+                <button type="button"
+                  class="plan-item-chevron w-10 h-10 rounded-full bg-neutral-50 flex items-center justify-center text-[#6B6560] active-overlay border border-neutral-100"
+                  aria-expanded="false" aria-label="展开操作" onclick="event.stopPropagation(); togglePlanItem(this)">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M19 9l-7 7-7-7"></path>
+                  </svg>
                 </button>
               </div>
             </div>
             <div class="plan-item-actions border-t border-[#F0EBE3]/80 bg-[#FCFAF7]">
               <div class="px-3 py-3 grid grid-cols-2 gap-2">
-                <button type="button" class="min-h-[44px] rounded-xl bg-white border border-neutral-200/90 text-[14px] font-bold text-[#2D2926] active-overlay shadow-sm" onclick="event.stopPropagation(); window.location.href='04-plan-create.html'">编辑计划</button>
-                <button type="button" class="min-h-[44px] rounded-xl bg-white border border-amber-200/90 text-[14px] font-bold text-amber-900/90 active-overlay" onclick="event.stopPropagation(); planDemoFeedback(this,'已暂停（示意）')">暂停用药</button>
-                <button type="button" class="min-h-[44px] rounded-xl bg-white/60 border border-neutral-100 text-[13px] font-semibold text-[#8C847E] col-span-2 active-overlay" onclick="event.stopPropagation(); openPlanStub('detail','深海鱼油')">查看计划详情</button>
+                <button type="button"
+                  class="min-h-[44px] rounded-xl bg-white border border-neutral-200/90 text-[14px] font-bold text-[#2D2926] active-overlay shadow-sm"
+                  onclick="event.stopPropagation(); window.location.href='04-plan-create.html'">编辑计划</button>
+                <button type="button"
+                  class="min-h-[44px] rounded-xl bg-white border border-amber-200/90 text-[14px] font-bold text-amber-900/90 active-overlay"
+                  onclick="event.stopPropagation(); planDemoFeedback(this,'已暂停（示意）')">暂停用药</button>
+                <button type="button"
+                  class="min-h-[44px] rounded-xl bg-white/60 border border-neutral-100 text-[13px] font-semibold text-[#8C847E] col-span-2 active-overlay"
+                  onclick="event.stopPropagation(); openPlanStub('detail','深海鱼油')">查看计划详情</button>
               </div>
             </div>
           </article>
@@ -281,9 +463,14 @@
     </div>
 
     <!-- 底部悬浮添加按钮 (大面积触控区适老) -->
-    <div class="absolute bottom-[24px] mb-[env(safe-area-bottom)] left-6 right-6 z-40 transition-transform hover:-translate-y-1">
-      <button class="w-full min-h-[56px] py-3.5 bg-brand-primary text-white rounded-[28px] text-[18px] font-bold shadow-brand-md active-overlay btn-bounce flex items-center justify-center gap-2" onclick="window.location.href='04-plan-create.html'">
-        <svg class="w-6 h-6 -ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg>
+    <div
+      class="absolute bottom-[24px] mb-[env(safe-area-bottom)] left-6 right-6 z-40 transition-transform hover:-translate-y-1">
+      <button
+        class="w-full min-h-[56px] py-3.5 bg-brand-primary text-white rounded-[28px] text-[18px] font-bold shadow-brand-md active-overlay btn-bounce flex items-center justify-center gap-2"
+        onclick="window.location.href='04-plan-create.html'">
+        <svg class="w-6 h-6 -ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path>
+        </svg>
         新增用药安排
       </button>
     </div>
@@ -291,7 +478,8 @@
     <!-- 安全区底色适配 -->
     <div class="absolute bottom-0 w-full h-[env(safe-area-inset-bottom)] bg-[#F9F7F3]"></div>
     <!-- 安全区提示条 (iOS Home Indicator) -->
-    <div class="absolute bottom-1 w-1/3 h-1.5 bg-neutral-300 rounded-full left-1/2 -translate-x-1/2 opacity-50 z-50"></div>
+    <div class="absolute bottom-1 w-1/3 h-1.5 bg-neutral-300 rounded-full left-1/2 -translate-x-1/2 opacity-50 z-50">
+    </div>
 
   </div>
 
@@ -370,4 +558,5 @@
     }
   </script>
 </body>
+
 </html>
