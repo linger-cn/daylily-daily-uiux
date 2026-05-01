@@ -443,6 +443,19 @@
             <!-- Tab 3: 复杂剂量 (交替/递减) -->
             <div id="expert-content-2" class="expert-content hidden animate-fade-in">
                <p class="text-[13px] text-amber-800/90 mb-4 leading-relaxed font-medium bg-amber-500/10 p-3 rounded-xl border border-amber-500/20">在此模式下，你只需在此设定每天的基本用量，然后通过日历将“特殊的某几天”覆盖为你想要的剂量（如华法林单双日，或激素递减）。</p>
+               
+               <!-- 修复：补回基础用量设置 -->
+               <div class="flex items-center justify-between bg-white p-3.5 rounded-xl border border-black/[0.04] shadow-sm mb-4">
+                  <div class="flex flex-col">
+                      <span class="text-[15px] font-bold text-[#5C534A]">常规基本用量</span>
+                      <span class="text-[11px] text-[#8C847E] mt-0.5">大多数日子的默认剂量</span>
+                  </div>
+                  <div class="flex items-center gap-1.5">
+                     <input type="number" value="1" class="w-14 h-9 bg-neutral-50 border border-neutral-200 rounded-lg text-center text-[16px] font-bold text-brand-primary focus:outline-none focus:border-brand-primary">
+                     <span class="text-[14px] text-[#8C847E]">片</span>
+                  </div>
+               </div>
+
                <div class="bg-white rounded-[16px] border border-black/[0.04] p-4 shadow-sm">
                   <div class="flex items-center justify-between mb-4">
                      <span class="text-[15px] font-bold text-[#2D2926]">例外剂量规则表</span>
@@ -483,20 +496,73 @@
         
         <!-- 限期服用展开区 -->
         <div id="short-term-panel" class="hidden bg-[#F9F7F3] p-4 rounded-[20px] border border-black/[0.03]">
-          <p class="text-[13px] text-[#8C847E] mb-3 font-medium">快捷选择天数：</p>
-          <div class="flex flex-wrap gap-2.5">
-            <div class="bg-white border border-neutral-200 text-[#5C534A] text-[14px] font-bold px-4 py-2.5 rounded-xl cursor-pointer active-overlay shadow-sm hover:border-brand-primary/50" onclick="selectDays(7)">7 天</div>
-            <div class="bg-white border border-neutral-200 text-[#5C534A] text-[14px] font-bold px-4 py-2.5 rounded-xl cursor-pointer active-overlay shadow-sm hover:border-brand-primary/50" onclick="selectDays(14)">14 天</div>
-            <div class="bg-white border border-neutral-200 text-[#5C534A] text-[14px] font-bold px-4 py-2.5 rounded-xl cursor-pointer active-overlay shadow-sm hover:border-brand-primary/50" onclick="selectDays(30)">1 个月</div>
-            <div class="bg-white border border-brand-primary/30 text-brand-primary text-[14px] font-bold px-3 py-1.5 rounded-xl flex items-center gap-1 active-overlay">
-              <input type="number" placeholder="自定义" class="bg-transparent w-14 text-center focus:outline-none placeholder:font-normal placeholder:text-brand-primary/50 font-bold"> 天
+          
+          <!-- 调试开关 (仅原型可见) -->
+          <div class="flex justify-end mb-1">
+            <span class="text-[10px] bg-neutral-200/60 text-neutral-500 px-2 py-1 rounded cursor-pointer hover:bg-neutral-300" onclick="toggleEditModeDemo()">
+              ⚙️ 切换编辑态演示
+            </span>
+          </div>
+
+          <!-- 视图 A: 新建态 (Create Mode) -->
+          <div id="duration-create-view" class="block animate-fade-in">
+            <p class="text-[13px] text-[#8C847E] mb-3 font-medium">快捷选择天数：</p>
+            <div class="flex flex-wrap gap-2.5">
+              <div class="bg-white border border-neutral-200 text-[#5C534A] text-[14px] font-bold px-4 py-2.5 rounded-xl cursor-pointer active-overlay shadow-sm hover:border-brand-primary/50" onclick="selectDays(7)">7 天</div>
+              <div class="bg-white border border-neutral-200 text-[#5C534A] text-[14px] font-bold px-4 py-2.5 rounded-xl cursor-pointer active-overlay shadow-sm hover:border-brand-primary/50" onclick="selectDays(14)">14 天</div>
+              <div class="bg-white border border-neutral-200 text-[#5C534A] text-[14px] font-bold px-4 py-2.5 rounded-xl cursor-pointer active-overlay shadow-sm hover:border-brand-primary/50" onclick="selectDays(30)">1 个月</div>
+              <div class="bg-white border border-brand-primary/30 text-brand-primary text-[14px] font-bold px-3 py-1.5 rounded-xl flex items-center gap-1 active-overlay">
+                <input type="number" placeholder="自定义" class="bg-transparent w-14 text-center focus:outline-none placeholder:font-normal placeholder:text-brand-primary/50 font-bold"> 天
+              </div>
             </div>
           </div>
-          <p class="text-[12px] text-[#8C847E] mt-4 flex items-center gap-1.5 bg-white py-2 px-3 rounded-lg border border-neutral-100">
-            <svg class="w-4 h-4 text-brand-primary/80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-            预计将在 <strong>5月14日</strong> 自动结束提醒
+
+          <!-- 视图 B: 编辑态 (Edit Mode) -->
+          <div id="duration-edit-view" class="hidden animate-fade-in">
+             <div class="flex items-center justify-between mb-3">
+                 <p class="text-[13px] text-[#8C847E] font-medium">修改剩余天数：</p>
+                 <span class="text-[10px] bg-amber-500/10 text-amber-600 px-2 py-0.5 rounded font-bold border border-amber-500/20">编辑模式</span>
+             </div>
+             <div class="flex flex-wrap gap-2.5">
+               <!-- 核心回填字段：剩余天数 -->
+               <div class="bg-brand-primary text-white border border-brand-primary text-[14px] font-bold px-4 py-2.5 rounded-xl flex items-center gap-2 shadow-sm shadow-brand-primary/30">
+                 剩余 <input type="number" value="4" class="bg-transparent w-8 text-center text-white focus:outline-none font-bold border-b border-white/40"> 天
+               </div>
+               <!-- 提供重置疗程选项 -->
+               <div class="bg-white border border-neutral-200 text-[#5C534A] text-[13px] font-medium px-3 py-2.5 rounded-xl cursor-pointer active-overlay shadow-sm hover:border-brand-primary/50 flex items-center gap-1 transition-colors">
+                 <svg class="w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                 重新开始 7 天
+               </div>
+             </div>
+          </div>
+
+          <!-- 底部提示文案 -->
+          <p class="text-[12px] text-[#8C847E] mt-4 flex items-start gap-1.5 bg-white py-2.5 px-3 rounded-lg border border-neutral-100 shadow-sm leading-relaxed">
+            <svg class="w-4 h-4 text-brand-primary/80 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+            <span id="duration-hint-text">预计将在 <strong>5月14日</strong> 自动结束提醒</span>
           </p>
         </div>
+        
+        <script>
+          // 原型演示用的切换逻辑
+          let isDemoEditMode = false;
+          function toggleEditModeDemo() {
+            isDemoEditMode = !isDemoEditMode;
+            const createView = document.getElementById('duration-create-view');
+            const editView = document.getElementById('duration-edit-view');
+            const hintText = document.getElementById('duration-hint-text');
+            
+            if(isDemoEditMode) {
+              createView.classList.replace('block', 'hidden');
+              editView.classList.replace('hidden', 'block');
+              hintText.innerHTML = '原计划共 7 天，已经服药 3 天。<br>预计将在 <strong>5月14日</strong> 结束。';
+            } else {
+              editView.classList.replace('block', 'hidden');
+              createView.classList.replace('hidden', 'block');
+              hintText.innerHTML = '预计将在 <strong>5月14日</strong> 自动结束提醒';
+            }
+          }
+        </script>
         
       </section>
 
