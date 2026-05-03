@@ -2,30 +2,57 @@
 <html lang="zh-CN" class="light">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>萱草日签 - 家人照护(异常处理)</title>
   <link id="theme-css" rel="stylesheet" href="themes/default.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
       darkMode: 'class',
       theme: {
         extend: {
+          fontFamily: {
+            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+          },
           colors: {
             brand: {
-              primary: 'rgb(var(--brand-primary) / <alpha-value>)',
-            },
-            feedback: {
-              success: 'rgb(var(--feedback-success) / <alpha-value>)',
-              warning: 'rgb(var(--feedback-warning) / <alpha-value>)',
+              50: '#fdf8f6',
+              100: '#f2e8e5',
+              primary: '#2D2926',
             },
             wechat: {
               green: '#07C160',
+              light: '#E1F6EA',
+            },
+            surface: {
+              glass: 'rgba(255, 255, 255, 0.75)',
             }
           },
           boxShadow: {
-            'brand-sm': '0 2px 4px -1px rgb(var(--shadow-color) / 0.06), 0 1px 2px -1px rgb(var(--shadow-color) / 0.04)',
-            'alert': '0 10px 40px -10px rgba(220, 38, 38, 0.2)',
+            'glass': '0 8px 32px 0 rgba(0, 0, 0, 0.04)',
+            'glass-sm': '0 4px 16px 0 rgba(0, 0, 0, 0.02)',
+            'glow-amber': '0 0 20px 0 rgba(245, 158, 11, 0.15)',
+            'glow-green': '0 8px 24px -4px rgba(7, 193, 96, 0.3)',
+          },
+          animation: {
+            'fade-in-up': 'fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+            'pulse-soft': 'pulseSoft 3s ease-in-out infinite',
+            'breathe': 'breathe 4s ease-in-out infinite',
+          },
+          keyframes: {
+            fadeInUp: {
+              '0%': { opacity: '0', transform: 'translateY(12px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            },
+            pulseSoft: {
+              '0%, 100%': { opacity: '1', boxShadow: '0 0 0 0 rgba(244, 63, 94, 0.1)' },
+              '50%': { opacity: '0.9', boxShadow: '0 0 0 6px rgba(244, 63, 94, 0)' },
+            },
+            breathe: {
+              '0%, 100%': { transform: 'scale(1)', opacity: '0.6' },
+              '50%': { transform: 'scale(1.05)', opacity: '0.9' },
+            }
           }
         }
       }
@@ -34,138 +61,178 @@
   <style>
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-    .active-overlay { position: relative; overflow: hidden; }
-    .active-overlay::after { content: ''; position: absolute; inset: 0; background-color: rgba(0,0,0,0); transition: background-color 0.1s; pointer-events: none; }
-    .active-overlay:active::after { background-color: rgba(0,0,0,0.08); }
-    .btn-bounce { transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1); }
-    .btn-bounce:active { transform: scale(0.95); }
-    .pulse-border { animation: pulseBorder 2s infinite; }
-    @keyframes pulseBorder {
-      0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
-      70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+    
+    /* Smooth button press effect */
+    .btn-press {
+      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
+    .btn-press:active {
+      transform: scale(0.96);
+    }
+    
+    /* Glassmorphism backdrop filter */
+    .glass-panel {
+      background: rgba(255, 255, 255, 0.65);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+    }
+
+    /* Ambient animated background */
+    .ambient-bg {
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 100%;
+      background: radial-gradient(circle at 50% -10%, #Fef6f3 0%, #f7f7f9 40%, #f2f2f6 100%);
+      z-index: 0;
+      pointer-events: none;
+    }
+    
+    .stagger-1 { animation-delay: 0.1s; opacity: 0; }
+    .stagger-2 { animation-delay: 0.2s; opacity: 0; }
+    .stagger-3 { animation-delay: 0.3s; opacity: 0; }
   </style>
 </head>
-<body class="bg-neutral-100 flex items-center justify-center min-h-screen font-sans antialiased text-[#4A443F]">
-  <!-- Mobile Container -->
-  <div class="relative w-full max-w-[375px] h-[812px] bg-[#F9F7F3] shadow-2xl overflow-hidden flex flex-col border-[8px] border-neutral-900 rounded-[50px]">
+<body class="bg-neutral-900 flex items-center justify-center min-h-screen font-sans antialiased text-neutral-800 selection:bg-brand-primary selection:text-white">
+  
+  <!-- Mobile Device Simulator Container -->
+  <div class="relative w-full max-w-[375px] h-[812px] bg-white shadow-2xl overflow-hidden flex flex-col border-[8px] border-neutral-900 rounded-[50px] isolate">
     
+    <!-- Beautiful Ambient Background -->
+    <div class="ambient-bg"></div>
+
     <!-- 1. Header NavBar -->
-    <div class="shrink-0 z-50 bg-[#F9F7F3]/80 backdrop-blur-md">
-      <div class="h-11 w-full"></div>
-      <div class="h-11 w-full flex items-center justify-between px-4 relative border-b border-black/5">
+    <div class="shrink-0 z-50 pt-11 px-4 pb-2 relative">
+      <div class="flex items-center justify-between h-10">
         <div class="w-20"></div>
-        <h2 class="text-[19px] font-bold text-[#2D2926]">萱草日签</h2>
-        <div class="w-[87px] h-8 bg-black/5 rounded-full border border-black/5 flex items-center justify-around px-2 py-1 opacity-40">
-           <div class="w-1.5 h-1.5 rounded-full bg-black"></div>
-           <div class="w-1 h-1 rounded-full bg-black"></div>
-           <div class="w-[1px] h-3 bg-black/20"></div>
-           <div class="w-4 h-4 rounded-full border-2 border-black"></div>
+        <h2 class="text-[17px] font-bold text-neutral-900 tracking-tight">萱草日签</h2>
+        <div class="w-[82px] h-[28px] bg-white/40 backdrop-blur-md rounded-full border border-white/60 flex items-center justify-around px-2 py-1 shadow-sm">
+           <div class="flex space-x-1 items-center">
+             <div class="w-1 h-1 rounded-full bg-neutral-800"></div>
+             <div class="w-1.5 h-1.5 rounded-full bg-neutral-800"></div>
+           </div>
+           <div class="w-[1px] h-3 bg-neutral-300"></div>
+           <div class="w-3.5 h-3.5 rounded-full border-[1.5px] border-neutral-800"></div>
         </div>
       </div>
     </div>
 
     <!-- Scrollable Body -->
-    <div class="flex-1 overflow-y-auto no-scrollbar pb-24 relative">
+    <div class="flex-1 overflow-y-auto no-scrollbar pb-24 relative z-10">
       
       <!-- 2. Identity Toggle (Family Care is ACTIVE) -->
-      <div class="sticky top-0 z-40 flex justify-center pt-3 pb-2 bg-gradient-to-b from-[#F9F7F3] to-transparent pointer-events-none">
-         <div class="pointer-events-auto h-[36px] bg-[#2D2926]/90 backdrop-blur-lg rounded-full px-1 flex items-center shadow-lg border border-white/5 transition-all">
-            <div class="h-7 px-5 rounded-full flex items-center justify-center text-[13px] font-bold text-white/50 cursor-pointer active-overlay" onclick="window.location.href='01-home.html'">
+      <div class="sticky top-0 z-40 flex justify-center pt-2 pb-3 bg-gradient-to-b from-[#f7f7f9] via-[#f7f7f9]/90 to-transparent">
+         <div class="h-[32px] bg-neutral-900/90 backdrop-blur-xl rounded-full p-0.5 flex items-center shadow-lg border border-white/10">
+            <div class="h-[28px] px-4 rounded-full flex items-center justify-center text-[12px] font-semibold text-white/50 btn-press cursor-pointer hover:text-white/70 transition-colors" onclick="window.location.href='01-home.html'">
               我的用药
             </div>
-            <!-- 此时 家人照护 处于激活状态 -->
-            <div class="h-7 px-5 rounded-full flex items-center justify-center text-[13px] font-bold bg-white text-neutral-900 shadow-sm cursor-pointer relative">
+            <!-- Active State -->
+            <div class="h-[28px] px-4 rounded-full flex items-center justify-center text-[12px] font-bold bg-white text-neutral-900 shadow-sm btn-press cursor-pointer relative">
               家人照护
             </div>
          </div>
       </div>
 
-      <!-- 面板头：文案宣告这是纯真的异常大盘 -->
-      <div class="px-6 mt-4 mb-2 flex items-center justify-between">
-         <h3 class="text-[20px] font-bold text-[#2D2926] tracking-tight">今日漏服警告</h3>
-         <div class="flex items-center text-[14px] font-medium text-[#8C847E]" onclick="toggleEmptyState()">
-            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
+      <!-- 面板头 -->
+      <div class="px-5 mt-2 mb-3 flex items-center justify-between animate-fade-in-up">
+         <div>
+           <h3 class="text-[20px] font-extrabold text-neutral-900 tracking-tight leading-tight">今日异常</h3>
+           <p class="text-[12px] text-neutral-500 font-medium mt-0.5">2 位家人需要您的关注</p>
+         </div>
+         <div class="flex items-center text-[12px] font-semibold text-neutral-500 bg-white/50 px-2.5 py-1.5 rounded-full border border-white/60 shadow-glass-sm btn-press cursor-pointer" onclick="toggleEmptyState()">
+            <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
             只看异常
          </div>
       </div>
 
       <!-- 3. Exception Focus Area (异常卡片流) -->
-      <div id="exception-view" class="px-5 space-y-4 pt-2">
+      <div id="exception-view" class="px-4 space-y-4">
 
-         <!-- Alert 1 (Grandpa missed medication) -->
-         <div class="bg-white rounded-[24px] p-5 border-2 border-red-500/20 shadow-alert relative overflow-hidden pulse-border">
-            <!-- 红色装饰渐变底 -->
-            <div class="absolute top-0 right-0 w-32 h-32 bg-red-500/5 rounded-bl-[100px] pointer-events-none"></div>
+         <!-- Alert 1 (Grandpa missed medication - High Priority) -->
+         <div class="glass-panel rounded-[20px] p-4 shadow-glass relative overflow-hidden animate-fade-in-up stagger-1 group">
+            <!-- 优雅的警告侧边流光效果 -->
+            <div class="absolute left-0 top-0 bottom-0 w-1.5 bg-gradient-to-b from-rose-400 to-amber-400 rounded-l-[20px]"></div>
+            <!-- 柔和呼吸光晕 -->
+            <div class="absolute -top-10 -right-10 w-24 h-24 bg-rose-400/10 rounded-full blur-2xl animate-pulse-soft pointer-events-none"></div>
             
             <div class="flex items-start justify-between relative z-10">
-               <!-- 左侧家人信息 -->
+               <!-- 左侧：家人信息 -->
                <div class="flex items-center">
                   <div class="relative">
-                     <img class="w-16 h-16 rounded-full border border-neutral-100 shadow-sm" src="https://api.dicebear.com/7.x/notionists/svg?seed=Felix&backgroundColor=fce7f3" alt="Grandpa">
-                     <div class="absolute -bottom-1 -right-1 w-6 h-6 bg-white rounded-full flex items-center justify-center shadow-sm">
-                       <svg class="w-3.5 h-3.5 text-orange-400" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                     <div class="w-12 h-12 rounded-[16px] bg-gradient-to-br from-rose-50 to-orange-50 p-[1.5px] shadow-sm">
+                       <img class="w-full h-full rounded-[14px] object-cover" src="https://api.dicebear.com/7.x/notionists/svg?seed=Felix&backgroundColor=transparent" alt="Grandpa">
+                     </div>
+                     <div class="absolute -bottom-1 -right-1 w-6 h-6 bg-white rounded-full flex items-center justify-center shadow-md border border-neutral-50/50">
+                       <div class="w-4 h-4 rounded-full bg-rose-50 flex items-center justify-center">
+                         <svg class="w-3 h-3 text-rose-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                       </div>
                      </div>
                   </div>
-                  <div class="ml-4">
-                     <div class="text-[18px] font-bold text-[#2D2926]">爷爷</div>
-                     <div class="text-[14px] font-medium text-red-500 mt-0.5 flex items-center">
-                        <svg class="w-3.5 h-3.5 mr-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                  <div class="ml-3">
+                     <div class="text-[15px] font-bold text-neutral-900">爷爷</div>
+                     <div class="text-[11px] font-semibold text-rose-500 mt-0.5 flex items-center bg-rose-50 px-1.5 py-0.5 rounded w-fit">
+                        <svg class="w-3 h-3 mr-1 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                         延时 2.5 小时
                      </div>
                   </div>
                </div>
-               <!-- 右侧漏服详情 (不再是罗列，而是核心突出对象) -->
-               <div class="text-right flex flex-col justify-center">
-                  <div class="text-[18px] font-bold text-[#2D2926]">降压药</div>
-                  <div class="text-[14px] font-medium text-[#8C847E] mt-1">晨间 08:00</div>
+               
+               <!-- 右侧：药品概要 -->
+               <div class="text-right">
+                  <div class="text-[14px] font-bold text-neutral-900">降压药</div>
+                  <div class="text-[11px] font-medium text-neutral-400 mt-0.5">晨间 08:00</div>
                </div>
             </div>
 
-            <!-- 底部核心操作：一键微信提醒 -->
-            <div class="mt-6 flex items-center space-x-3">
-               <div class="flex-1 bg-wechat-green text-white min-h-[56px] py-3.5 rounded-[28px] flex items-center justify-center text-[16px] font-bold shadow-[0_8px_16px_-6px_rgba(7,193,96,0.4)] cursor-pointer active-overlay btn-bounce px-4">
-                  <svg class="w-5 h-5 mr-1.5 shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M8.5 13.5c-2.48 0-4.5-1.79-4.5-4s2.02-4 4.5-4 4.5 1.79 4.5 4-2.02 4-4.5 4zm6.5 6c-2.21 0-4-1.34-4-3s1.79-3 4-3 4 1.34 4 3-1.79 3-4 3z"/></svg>
-                  微信拍一拍提醒
+            <!-- 底部：高级操作区 (高优干预：语音通话) -->
+            <div class="mt-4 flex items-center space-x-2.5 relative z-10">
+               <div class="flex-1 bg-gradient-to-r from-wechat-green to-[#06ad56] text-white h-[40px] rounded-[12px] flex items-center justify-center text-[13px] font-bold shadow-glow-green cursor-pointer btn-press">
+                  <svg class="w-4 h-4 mr-1.5 shrink-0 opacity-90" fill="currentColor" viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+                  微信语音通话
                </div>
-               <!-- 忽略按钮 -->
-               <div class="w-14 h-14 shrink-0 rounded-full bg-neutral-100 flex items-center justify-center text-neutral-400 cursor-pointer active-overlay btn-bounce" title="他已经吃过了/暂不处理">
-                  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+               <div class="w-[40px] h-[40px] shrink-0 rounded-[12px] bg-white/80 border border-white flex items-center justify-center text-neutral-400 shadow-sm cursor-pointer btn-press hover:bg-neutral-50 transition-colors" onclick="openActionSheet()" title="处置警报">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"></path></svg>
                </div>
             </div>
          </div>
 
-         <!-- Alert 2 (Daughter missed medication) -->
-         <div class="bg-white rounded-[24px] p-5 border border-neutral-100 shadow-brand-sm relative">
+         <!-- Alert 2 (Daughter missed medication - Medium Priority) -->
+         <div class="glass-panel rounded-[20px] p-4 shadow-glass relative overflow-hidden animate-fade-in-up stagger-2">
+            <div class="absolute left-0 top-0 bottom-0 w-1.5 bg-gradient-to-b from-amber-300 to-orange-300 rounded-l-[20px]"></div>
+            
             <div class="flex items-start justify-between relative z-10">
                <div class="flex items-center">
                   <div class="relative">
-                     <img class="w-16 h-16 rounded-full border border-neutral-100 shadow-sm" src="https://api.dicebear.com/7.x/notionists/svg?seed=Lily&backgroundColor=dbeafe" alt="Daughter">
-                     <div class="absolute bottom-0 -right-1 w-6 h-6 bg-wechat-green rounded-full flex items-center justify-center border border-white shadow-sm">
-                        <svg class="w-3.5 h-3.5 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M8.5 13.5c-2.48 0-4.5-1.79-4.5-4s2.02-4 4.5-4 4.5 1.79 4.5 4-2.02 4-4.5 4zm6.5 6c-2.21 0-4-1.34-4-3s1.79-3 4-3 4 1.34 4 3-1.79 3-4 3z"/></svg>
+                     <div class="w-12 h-12 rounded-[16px] bg-gradient-to-br from-blue-50 to-indigo-50 p-[1.5px] shadow-sm">
+                       <img class="w-full h-full rounded-[14px] object-cover" src="https://api.dicebear.com/7.x/notionists/svg?seed=Lily&backgroundColor=transparent" alt="Daughter">
+                     </div>
+                     <div class="absolute -bottom-1 -right-1 w-6 h-6 bg-white rounded-full flex items-center justify-center shadow-md border border-neutral-50/50">
+                        <div class="w-4 h-4 rounded-full bg-amber-50 flex items-center justify-center">
+                          <svg class="w-3 h-3 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        </div>
                      </div>
                   </div>
-                  <div class="ml-4">
-                     <div class="text-[18px] font-bold text-[#2D2926]">女儿</div>
-                     <div class="text-[14px] font-medium text-feedback-warning mt-0.5 flex items-center">
-                        <svg class="w-3.5 h-3.5 mr-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                  <div class="ml-3">
+                     <div class="text-[15px] font-bold text-neutral-900">女儿</div>
+                     <div class="text-[11px] font-semibold text-amber-600 mt-0.5 flex items-center bg-amber-50 px-1.5 py-0.5 rounded w-fit">
+                        <svg class="w-3 h-3 mr-1 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                         延时 45 分钟
                      </div>
                   </div>
                </div>
-               <div class="text-right flex flex-col justify-center">
-                  <div class="text-[18px] font-bold text-[#2D2926]">复合维生素</div>
-                  <div class="text-[14px] font-medium text-[#8C847E] mt-1">午间 13:00</div>
+               <div class="text-right">
+                  <div class="text-[14px] font-bold text-neutral-900">复合维生素</div>
+                  <div class="text-[11px] font-medium text-neutral-400 mt-0.5">午间 13:00</div>
                </div>
             </div>
-            <div class="mt-6 flex items-center space-x-3">
-               <div class="flex-1 bg-wechat-green text-white min-h-[56px] py-3.5 rounded-[28px] flex items-center justify-center text-[16px] font-bold shadow-[0_8px_16px_-6px_rgba(7,193,96,0.3)] cursor-pointer active-overlay btn-bounce px-4">
-                  <svg class="w-5 h-5 mr-1.5 shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M8.5 13.5c-2.48 0-4.5-1.79-4.5-4s2.02-4 4.5-4 4.5 1.79 4.5 4-2.02 4-4.5 4zm6.5 6c-2.21 0-4-1.34-4-3s1.79-3 4-3 4 1.34 4 3-1.79 3-4 3z"/></svg>
-                  微信发送提醒
+            
+            <!-- 底部：低优干预：轻量化提醒 -->
+            <div class="mt-4 flex items-center space-x-2.5 relative z-10">
+               <div class="flex-1 bg-white border border-wechat-green/30 text-wechat-green h-[40px] rounded-[12px] flex items-center justify-center text-[13px] font-bold shadow-sm cursor-pointer btn-press hover:bg-wechat-green/5 transition-colors">
+                  <svg class="w-4 h-4 mr-1.5 shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M8.5 13.5c-2.48 0-4.5-1.79-4.5-4s2.02-4 4.5-4 4.5 1.79 4.5 4-2.02 4-4.5 4zm6.5 6c-2.21 0-4-1.34-4-3s1.79-3 4-3 4 1.34 4 3-1.79 3-4 3z"/></svg>
+                  微信拍一拍提醒
                </div>
-               <div class="w-14 h-14 shrink-0 rounded-full bg-neutral-100 flex items-center justify-center text-neutral-400 cursor-pointer active-overlay btn-bounce">
-                  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+               <div class="w-[40px] h-[40px] shrink-0 rounded-[12px] bg-white/80 border border-white flex items-center justify-center text-neutral-400 shadow-sm cursor-pointer btn-press hover:bg-neutral-50 transition-colors" onclick="openActionSheet()" title="处置警报">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"></path></svg>
                </div>
             </div>
          </div>
@@ -173,59 +240,140 @@
       </div>
 
       <!-- 4. All-Clear Empty State (极致的安心感) -->
-      <div id="all-clear-view" class="hidden px-5 flex flex-col items-center justify-center mt-20">
-         <div class="w-32 h-32 rounded-full bg-feedback-success/10 flex items-center justify-center relative">
-            <div class="absolute inset-0 bg-feedback-success/20 rounded-full animate-ping opacity-50 blur-xl"></div>
-            <div class="w-20 h-20 rounded-full bg-white shadow-lg flex items-center justify-center text-feedback-success z-10">
-               <svg class="w-10 h-10" fill="currentColor" viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>
+      <div id="all-clear-view" class="hidden px-6 flex flex-col items-center justify-center mt-12 animate-fade-in-up">
+         <!-- Beautiful glowing orb -->
+         <div class="relative w-28 h-28 flex items-center justify-center">
+            <div class="absolute inset-0 bg-emerald-400/20 rounded-full blur-xl animate-breathe"></div>
+            <div class="absolute inset-3 bg-gradient-to-br from-emerald-100 to-teal-50 rounded-full shadow-inner border border-white/50"></div>
+            <div class="relative w-12 h-12 bg-white rounded-full shadow-glass flex items-center justify-center text-emerald-500 z-10">
+               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
             </div>
          </div>
-         <h3 class="text-[20px] font-bold text-[#2D2926] mt-8">今日家人用药均已达标</h3>
-         <p class="text-[15px] text-[#8C847E] font-medium mt-2">没有任何漏服，岁月静好</p>
          
-         <div class="mt-12 bg-white/50 border border-neutral-200/60 px-6 py-3 min-h-[44px] rounded-full flex items-center justify-center text-[#8C847E] text-[14px] font-bold">
-            前往日历查看近期报告 >
+         <div class="text-center mt-6 relative z-10">
+           <h3 class="text-[18px] font-extrabold text-neutral-900 tracking-tight">今日照护完美达成</h3>
+           <p class="text-[13px] text-neutral-500 font-medium mt-1.5 leading-relaxed max-w-[220px] mx-auto">
+             没有任何异常漏服发生<br>您和家人度过了健康安心的一天
+           </p>
+         </div>
+         
+         <div class="mt-8 bg-white/60 backdrop-blur-md border border-white px-5 py-2.5 rounded-full flex items-center justify-center text-neutral-800 text-[13px] font-bold shadow-glass-sm btn-press cursor-pointer hover:bg-white/80 transition-colors">
+            查看历史健康报告
+            <svg class="w-3.5 h-3.5 ml-1 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
          </div>
       </div>
 
     </div>
 
     <!-- 5. 底部导航栏 (Home is active) -->
-    <div class="absolute bottom-0 w-full h-[50px] bg-[#F9F7F3]/95 backdrop-blur-xl border-t border-black/5 flex justify-around items-center px-2 z-[60] mb-[env(safe-area-inset-bottom)]">
-      <div class="flex flex-col items-center justify-center w-1/3 text-[#8C847E] active-overlay py-1 cursor-pointer" onclick="window.location.href='06-calendar.html'">
-        <svg class="w-6 h-6 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-        <span class="text-xs font-bold mt-1">日历</span>
-      </div>
-      
-      <div class="flex flex-col items-center justify-center w-1/3 text-brand-primary active-overlay py-1 cursor-pointer" onclick="window.location.href='01-home.html'">
-        <svg class="w-6 h-6 mb-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 3L4 9v12h16V9l-8-6zm0 2.5l6 4.5v9h-12v-9l6-4.5z"/></svg>
-        <span class="text-xs font-bold mt-1">首页</span>
-      </div>
+    <div class="absolute bottom-0 w-full bg-white/80 backdrop-blur-xl border-t border-white/40 shadow-[0_-8px_30px_rgba(0,0,0,0.02)] z-[60] pb-[env(safe-area-inset-bottom)] pt-1 px-6">
+      <div class="flex justify-between items-center h-[50px] relative">
+        
+        <!-- Tab: Calendar -->
+        <div class="flex flex-col items-center justify-center w-14 text-neutral-400 btn-press cursor-pointer" onclick="window.location.href='06-calendar.html'">
+          <svg class="w-5 h-5 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+          <span class="text-[10px] font-bold">日历</span>
+        </div>
+        
+        <!-- Tab: Home (Active) -->
+        <div class="flex flex-col items-center justify-center w-14 text-neutral-900 btn-press cursor-pointer relative" onclick="window.location.href='01-home.html'">
+          <div class="absolute -top-1 w-8 h-[3px] bg-neutral-900 rounded-b-full"></div>
+          <svg class="w-5 h-5 mb-1" fill="currentColor" viewBox="0 0 24 24"><path d="M12 3L4 9v12h16V9l-8-6zm0 2.5l6 4.5v9h-12v-9l6-4.5z"/></svg>
+          <span class="text-[10px] font-bold">首页</span>
+        </div>
 
-      <div class="flex flex-col items-center justify-center w-1/3 text-[#8C847E] active-overlay py-1 cursor-pointer" onclick="window.location.href='02-profile.html'">
-        <svg class="w-6 h-6 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-        <span class="text-xs font-bold mt-1">我的</span>
+        <!-- Tab: Profile -->
+        <div class="flex flex-col items-center justify-center w-14 text-neutral-400 btn-press cursor-pointer" onclick="window.location.href='02-profile.html'">
+          <svg class="w-5 h-5 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+          <span class="text-[10px] font-bold">我的</span>
+        </div>
       </div>
     </div>
 
-    <!-- 安全区 -->
-    <div class="absolute bottom-0 w-full h-[env(safe-area-inset-bottom)] bg-[#F9F7F3]"></div>
-    <div class="absolute bottom-1 w-1/3 h-1.5 bg-neutral-300 rounded-full left-1/2 -translate-x-1/2 opacity-50 z-[70]"></div>
+    <!-- Home Indicator -->
+    <div class="absolute bottom-2 w-1/3 h-[5px] bg-neutral-900 rounded-full left-1/2 -translate-x-1/2 z-[70]"></div>
+
+    <!-- Action Sheet Modal (Alert Resolution) -->
+    <div id="action-sheet-backdrop" class="fixed inset-0 bg-neutral-900/40 backdrop-blur-sm z-[100] opacity-0 pointer-events-none transition-opacity duration-300" onclick="closeActionSheet()"></div>
+    <div id="action-sheet" class="fixed bottom-0 left-0 right-0 max-w-[375px] mx-auto bg-white rounded-t-[32px] z-[101] transform translate-y-full transition-transform duration-300 ease-out shadow-[0_-10px_40px_rgba(0,0,0,0.1)] pb-[env(safe-area-inset-bottom)]">
+      <div class="p-6 pb-8">
+        <div class="w-12 h-1.5 bg-neutral-200 rounded-full mx-auto mb-6"></div>
+        <h3 class="text-[18px] font-extrabold text-neutral-900 text-center mb-6 tracking-tight">警报处置</h3>
+        
+        <div class="space-y-3">
+          <!-- 选项1：代为打卡 -->
+          <div class="w-full bg-neutral-50 hover:bg-emerald-50 rounded-[20px] p-4 flex items-center cursor-pointer btn-press border border-neutral-100 transition-colors" onclick="closeActionSheet(); toggleEmptyState();">
+            <div class="w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 mr-4 shadow-sm">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
+            </div>
+            <div class="flex-1 text-left">
+              <div class="text-[16px] font-bold text-neutral-900">已确认家人服药</div>
+              <div class="text-[13px] font-medium text-neutral-500 mt-0.5">代长辈打卡，消除警报</div>
+            </div>
+          </div>
+          
+          <!-- 选项2：稍后提醒 -->
+          <div class="w-full bg-neutral-50 hover:bg-amber-50 rounded-[20px] p-4 flex items-center cursor-pointer btn-press border border-neutral-100 transition-colors" onclick="closeActionSheet()">
+            <div class="w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center text-amber-600 mr-4 shadow-sm">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            </div>
+            <div class="flex-1 text-left">
+              <div class="text-[16px] font-bold text-neutral-900">稍后再次提醒</div>
+              <div class="text-[13px] font-medium text-neutral-500 mt-0.5">暂缓警报，30分钟后再挂出</div>
+            </div>
+          </div>
+          
+          <!-- 选项3：忽略 -->
+          <div class="w-full bg-neutral-50 hover:bg-neutral-100 rounded-[20px] p-4 flex items-center cursor-pointer btn-press border border-neutral-100 transition-colors" onclick="closeActionSheet()">
+            <div class="w-12 h-12 rounded-full bg-neutral-200 flex items-center justify-center text-neutral-500 mr-4 shadow-sm">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"></path></svg>
+            </div>
+            <div class="flex-1 text-left">
+              <div class="text-[16px] font-bold text-neutral-900">已知晓，暂不干预</div>
+              <div class="text-[13px] font-medium text-neutral-500 mt-0.5">单次忽略，卡片归档到日历</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
   </div>
 
   <script>
-    // 简单的用于演示空状态和异常状态切换的逻辑
+    // Action Sheet Logic
+    function openActionSheet() {
+      const backdrop = document.getElementById('action-sheet-backdrop');
+      const sheet = document.getElementById('action-sheet');
+      backdrop.classList.remove('opacity-0', 'pointer-events-none');
+      sheet.classList.remove('translate-y-full');
+    }
+
+    function closeActionSheet() {
+      const backdrop = document.getElementById('action-sheet-backdrop');
+      const sheet = document.getElementById('action-sheet');
+      backdrop.classList.add('opacity-0', 'pointer-events-none');
+      sheet.classList.add('translate-y-full');
+    }
+
+    // 切换空状态的逻辑
     function toggleEmptyState() {
        const exceptionView = document.getElementById('exception-view');
        const allClearView = document.getElementById('all-clear-view');
+       const headerTitle = document.querySelector('h3');
+       const headerSubtitle = document.querySelector('p.text-neutral-500');
        
        if (exceptionView.classList.contains('hidden')) {
+          // 切换回异常状态
           exceptionView.classList.remove('hidden');
           allClearView.classList.add('hidden');
+          headerTitle.innerText = "今日异常";
+          headerSubtitle.innerText = "2 位家人需要您的关注";
        } else {
+          // 切换到全绿状态
           exceptionView.classList.add('hidden');
           allClearView.classList.remove('hidden');
+          headerTitle.innerText = "健康日历";
+          headerSubtitle.innerText = "一切正常，继续保持";
        }
     }
   </script>
